@@ -1,0 +1,12 @@
+/* Asegura que html y body ocupen todo el alto de la ventana */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* El div del mapa debe ocupar todo el espacio disponible */
+#map {
+    height: 100%;
+    width: 100%;
+}
