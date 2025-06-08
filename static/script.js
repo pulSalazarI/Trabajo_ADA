@@ -1,6 +1,6 @@
 
 // Inicializamos el mapa centrado en coordenadas dadas y zoom 14
-const map = L.map('map').setView([-12.0464, -77.0428], 14);
+const map = L.map('map').setView([-12.21321449000,-76.93709478000], 14);
 
 // Añadimos la capa de mapa base de OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -17,7 +17,7 @@ const iconoPersona = L.icon({
 });
 
 // Crear marcador de la personita en una posición inicial (ejemplo)
-const marcadorPersona = L.marker([-12.0465, -77.0425], {icon: iconoPersona})
+const marcadorPersona = L.marker([-12.2210067,-76.924343], {icon: iconoPersona})
     .addTo(map)
     .bindPopup('¡Aquí estás tú!');
 

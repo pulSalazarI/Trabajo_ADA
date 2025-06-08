@@ -18,14 +18,10 @@ def home():
 # Lista estática que almacena los puntos de basura con sus datos:
 # id único, latitud, longitud y si ha sido visitado o no.
 puntos_basura = [
-    {"id": 1, "lat": -12.0464, "lon": -77.0428, "visitado": False},
-    {"id": 2, "lat": -12.0470, "lon": -77.0500, "visitado": False},
-    {"id": 3, "lat": -12.0450, "lon": -77.0380, "visitado": False},
-    {"id": 4, "lat": -12.0480, "lon": -77.0450, "visitado": False},
-    {"id": 5, "lat": -12.0435, "lon": -77.0475, "visitado": False},
-    {"id": 6, "lat": -12.0495, "lon": -77.0410, "visitado": False},
-    {"id": 7, "lat": -12.0440, "lon": -77.0520, "visitado": False},
-    {"id": 8, "lat": -12.0478, "lon": -77.0395, "visitado": False},
+    {"id": 1, "lat": -12.2234081, "lon": -76.9597511, "visitado": False},
+    {"id": 2, "lat": -12.2246028, "lon": -76.9305266, "visitado": False},
+    {"id": 3, "lat": -12.2130049, "lon":-76.9483784, "visitado": False},
+
 
 ]
 
