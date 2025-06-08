@@ -27,7 +27,7 @@ def obtener_puntos():
 @app.route('/punto-cercano', methods=['POST'])
 def punto_cercano():
     data = request.json
-    lat = data.get('lat')
+    lat = data.get('lat')   #comentario
     lon = data.get('lon')
 
     no_visitados = [p for p in puntos_basura if not p['visitado']]
