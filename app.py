@@ -1,78 +1,81 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
+from grafo.grafo_utils import construir_grafo_villa_el_salvador
+from grafo.ruta import calcular_ruta
 
-# Crear la aplicación Flask
 app = Flask(__name__)
-
-# Permitir solicitudes Cross-Origin Resource Sharing (CORS)
-# Esto habilita que el frontend (que puede estar en otro origen)
-# pueda hacer peticiones al backend sin problemas de política de mismo origen.
 CORS(app)
 
-# Ruta principal para mostrar la página HTML (index.html)
 @app.route('/')
 def home():
-    # Renderiza y devuelve el archivo index.html ubicado en la carpeta "templates"
     return render_template('mapa.html')
 
-# Lista estática que almacena los puntos de basura con sus datos:
-# id único, latitud, longitud y si ha sido visitado o no.
+# Lista de puntos de basura
 puntos_basura = [
     {"id": 1, "lat": -12.2234081, "lon": -76.9597511, "visitado": False},
     {"id": 2, "lat": -12.2246028, "lon": -76.9305266, "visitado": False},
-    {"id": 3, "lat": -12.2130049, "lon":-76.9483784, "visitado": False},
-
-
+    {"id": 3, "lat": -12.2130049, "lon": -76.9483784, "visitado": False},
 ]
 
-# Función para calcular la distancia Euclidiana simple entre dos puntos geográficos.
-# Se usa para determinar qué punto está más cercano.
 def distancia(lat1, lon1, lat2, lon2):
-    # Raíz cuadrada de la suma de las diferencias al cuadrado (distancia 2D)
     return ((lat1 - lat2)**2 + (lon1 - lon2)**2)**0.5
 
-# Ruta para obtener todos los puntos de basura en formato JSON
 @app.route('/puntos')
 def obtener_puntos():
-    # Devuelve la lista completa de puntos con todos sus atributos
     return jsonify(puntos_basura)
 
-# Ruta que recibe coordenadas (lat, lon) y devuelve el punto de basura
-# no visitado que está más cercano a esas coordenadas.
 @app.route('/punto-cercano', methods=['POST'])
 def punto_cercano():
-    data = request.json  # Obtiene los datos enviados en formato JSON
-    lat = data.get('lat')  # Latitud enviada
-    lon = data.get('lon')  # Longitud enviada
+    data = request.json
+    lat = data.get('lat')
+    lon = data.get('lon')
 
-    # Filtra los puntos que NO hayan sido visitados
     no_visitados = [p for p in puntos_basura if not p['visitado']]
-
-    # Si no hay puntos no visitados, retorna mensaje y código 404 (no encontrado)
     if not no_visitados:
         return jsonify({"mensaje": "No hay puntos no visitados"}), 404
 
-    # Busca el punto no visitado más cercano usando la función de distancia
     cercano = min(no_visitados, key=lambda p: distancia(lat, lon, p['lat'], p['lon']))
-
-    # Devuelve ese punto cercano en formato JSON
     return jsonify(cercano)
 
-# Ruta para marcar un punto como visitado.
-# Recibe el id del punto por la URL y usa método POST para modificar el estado.
 @app.route('/marcar-visitado/<int:punto_id>', methods=['POST'])
 def marcar_visitado(punto_id):
-    # Recorre la lista de puntos para buscar el que tenga el id especificado
     for p in puntos_basura:
         if p['id'] == punto_id:
-            # Cambia su atributo 'visitado' a True
             p['visitado'] = True
-            # Devuelve mensaje de éxito en JSON
             return jsonify({"mensaje": f"Punto {punto_id} marcado como visitado"})
-
-    # Si no encuentra el punto, devuelve un error 404 con mensaje
     return jsonify({"error": "Punto no encontrado"}), 404
 
-# Ejecuta la aplicación en modo debug cuando se ejecuta este archivo directamente
+# Construcción del grafo desde CSV
+grafo, coordenadas = construir_grafo_villa_el_salvador("grafo/lista_adyacencia_completa.csv")
+
+# Función para encontrar el nodo más cercano dadas unas coordenadas
+def encontrar_nodo_mas_cercano(coord, coordenadas):
+    lat0, lon0 = coord
+    return min(
+        coordenadas.items(),
+        key=lambda item: (lat0 - item[1][0])**2 + (lon0 - item[1][1])**2
+    )[0]
+
+@app.route('/ruta')
+def obtener_ruta():
+    try:
+        inicio_lat = float(request.args.get('inicio_lat'))
+        inicio_lon = float(request.args.get('inicio_lon'))
+        destino_lat = float(request.args.get('destino_lat'))
+        destino_lon = float(request.args.get('destino_lon'))
+
+        # Buscar nodos más cercanos en el grafo
+        nodo_inicio = encontrar_nodo_mas_cercano((inicio_lat, inicio_lon), coordenadas)
+        nodo_destino = encontrar_nodo_mas_cercano((destino_lat, destino_lon), coordenadas)
+
+        # Calcular la ruta
+        camino, _ = calcular_ruta(grafo, nodo_inicio, nodo_destino)
+
+        # Convertir nodos a coordenadas (lat, lon)
+        coords = [coordenadas[str(n)] for n in camino if str(n) in coordenadas]
+        return jsonify({"coordenadas": coords})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 if __name__ == '__main__':
     app.run(debug=True)
