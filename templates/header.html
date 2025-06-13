@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris Hartsch - Header</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background-color: #000000;
+            padding: 15px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 15px 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: normal;
+            border-right: 1px solid #333;
+        }
+
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+
+        .nav-link:hover {
+            background-color: #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-link {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">Chris Hartsch</div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#webdesign" class="nav-link">Webdesign</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#printstuff" class="nav-link">Printstuff</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#logodesign" class="nav-link">Logodesign</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#artwork" class="nav-link">Artwork</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contenido de ejemplo -->
+    <main style="padding: 50px 20px; text-align: center;">
+        <h1 style="color: #333;">Contenido del sitio</h1>
+        <p style="color: #666;">Aquí va el resto del contenido...</p>
+    </main>
+</body>
+</html>
