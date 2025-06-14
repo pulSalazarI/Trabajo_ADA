@@ -2,48 +2,68 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from grafo.grafo_utils import construir_grafo_villa_el_salvador
 from grafo.ruta import calcular_ruta
+from dotenv import load_dotenv
+import os
+import requests
 
 app = Flask(__name__)
 CORS(app)
+
+load_dotenv()
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 @app.route('/')
 def home():
     return render_template('mapa.html')
 
-# Lista de puntos de basura
-puntos_basura = [
-    {"id": 1, "lat": -12.2234081, "lon": -76.9597511, "visitado": False},
-    {"id": 2, "lat": -12.2246028, "lon": -76.9305266, "visitado": False},
-    {"id": 3, "lat": -12.2130049, "lon": -76.9483784, "visitado": False},
-]
+@app.route('/bienvenida')
+def bienvenida():
+    return render_template('Bienvenida.html')
 
-def distancia(lat1, lon1, lat2, lon2):
-    return ((lat1 - lat2)**2 + (lon1 - lon2)**2)**0.5
+# Función para obtener puntos de basura desde Supabase
+def obtener_puntos_supabase():
+    url = f"{SUPABASE_URL}/rest/v1/p_basura?select=id_denuncia,latitud,longitud,estado_activo&estado_activo=eq.1"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        datos = response.json()
+        return [
+            {
+                "id": p["id_denuncia"],
+                "lat": float(p["latitud"]),
+                "lon": float(p["longitud"]),
+                "visitado": False
+            }
+            for p in datos
+        ]
+    else:
+        return []
 
 @app.route('/puntos')
 def obtener_puntos():
-    return jsonify(puntos_basura)
+    return jsonify(obtener_puntos_supabase())
 
-@app.route('/punto-cercano', methods=['POST'])
-def punto_cercano():
-    data = request.json
-    lat = data.get('lat')   #comentario
-    lon = data.get('lon')
-
-    no_visitados = [p for p in puntos_basura if not p['visitado']]
-    if not no_visitados:
-        return jsonify({"mensaje": "No hay puntos no visitados"}), 404
-
-    cercano = min(no_visitados, key=lambda p: distancia(lat, lon, p['lat'], p['lon']))
-    return jsonify(cercano)
 
 @app.route('/marcar-visitado/<int:punto_id>', methods=['POST'])
 def marcar_visitado(punto_id):
-    for p in puntos_basura:
-        if p['id'] == punto_id:
-            p['visitado'] = True
-            return jsonify({"mensaje": f"Punto {punto_id} marcado como visitado"})
-    return jsonify({"error": "Punto no encontrado"}), 404
+    url = f"{SUPABASE_URL}/rest/v1/p_basura?id_denuncia=eq.{punto_id}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    # Actualizar estado_activo a 0
+    data = {"estado_activo": 0}
+    response = requests.patch(url, headers=headers, json=data)
+    if response.status_code in [200, 204]:
+        return jsonify({"mensaje": f"Punto {punto_id} marcado como visitado"})
+    else:
+        return jsonify({"error": "No se pudo actualizar el estado en Supabase"}), 400
 
 # Construcción del grafo desde CSV
 grafo, coordenadas = construir_grafo_villa_el_salvador("grafo/lista_adyacencia_completa.csv")
@@ -68,7 +88,7 @@ def obtener_ruta():
         nodo_inicio = encontrar_nodo_mas_cercano((inicio_lat, inicio_lon), coordenadas)
         nodo_destino = encontrar_nodo_mas_cercano((destino_lat, destino_lon), coordenadas)
 
-        # Calcular la ruta
+        # Calcular la ruta se aplica djastra
         camino, _ = calcular_ruta(grafo, nodo_inicio, nodo_destino)
 
         # Convertir nodos a coordenadas (lat, lon)

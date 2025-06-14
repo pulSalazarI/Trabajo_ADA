@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chris Hartsch - Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            /* Aquí pondrás tu URL de imagen de fondo */
+            background-image: url('/static/images/Fondo_bienvenida.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            background-color: #000000;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 0;
+            align-items: center;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 15px 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: normal;
+            border-right: 1px solid #333;
+        }
+
+        .nav-item:last-child .nav-link {
+            border-right: none;
+        }
+
+        .nav-link:hover {
+            background-color: #333;
+        }
+
+        .main-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            min-height: calc(100vh - 80px);
+        }
+
+        .left-section {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .intro-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+
+        .intro-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .right-section {
+            flex: 0 0 300px;
+            margin-left: 40px;
+        }
+
+        .contact-form {
+            background: rgba(255,255,255,0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .contact-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            color: #333;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #8BC34A;
+            box-shadow: 0 0 5px rgba(139, 195, 74, 0.3);
+        }
+
+        .form-textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .send-button {
+            background: #8BC34A;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: #7CB342;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-link {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
+
+            .main-content {
+                flex-direction: column;
+                text-align: center;
+                padding: 40px 20px;
+            }
+
+            .right-section {
+                flex: none;
+                margin-left: 0;
+                margin-top: 40px;
+                width: 100%;
+                max-width: 400px;
+            }
+
+            .intro-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">Chris Hartsch</div>
+            <nav>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#webdesign" class="nav-link">Webdesign</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#printstuff" class="nav-link">Printstuff</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#logodesign" class="nav-link">Logodesign</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#artwork" class="nav-link">Artwork</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="left-section">
+            <h1 class="intro-title">Hi, I'm Chris</h1>
+            <p class="intro-text">
+                I am a 23-year old designer trying to make the world look a bit better. I have 
+                worked for many agencies all around the world. Since early 2009 I have worked for 
+                eyesite media based in Hamburg, Germany. I am a movie and coffee addict, 
+                workaholic, I love cars, music and I am always looking for new challenges. Do you 
+                have one for me? <strong>more</strong>
+            </p>
+        </div>
+
+        <div class="right-section">
+            {% include 'ctn_registrarse.html' %}
+        </div>
+    </main>
+</body>
+</html>
