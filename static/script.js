@@ -6,7 +6,6 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-
 // Crear icono personalizado para la personita
 const iconoPersona = L.icon({
     iconUrl: '/static/images/icono_personita.png',  // Asegúrate que tu imagen esté en /static/images/
@@ -20,9 +19,6 @@ const marcadorPersona = L.marker([-12.2210067,-76.924343], {icon: iconoPersona})
     .addTo(map)
     .bindPopup('¡Aquí estás tú!');
 
-
-
-
 // Objeto para guardar los marcadores, clave: id del punto
 const markers = {};
 
@@ -34,31 +30,32 @@ function cargarPuntos() {
             puntos.forEach(p => {
                 // Creamos marcador para cada punto
                 const marker = L.marker([p.lat, p.lon]).addTo(map);
-                
                 // Guardamos el marcador en el objeto para poder eliminarlo después
                 markers[p.id] = marker;
-
-                // Asociamos popup con botón para marcar como visitado
+                // Asociamos popup con botón para marcar como visitado y detalle
                 marker.bindPopup(`
                 Punto ID: ${p.id} <br>
                 Visitado: ${p.visitado} <br>
                 <button onclick="marcarVisitado(${p.id})" disabled>Marcar Visitado</button><br>
-                <button onclick="marcarRuta(${p.lat}, ${p.lon})">Marcar Ruta</button>
+                <button onclick="marcarRuta(${p.lat}, ${p.lon})">Marcar Ruta</button><br>
+                <button onclick="window.location.href='/detalle_basura'">Detalle</button>
                 `);
-
             });
         });
 }
 
 // Función para marcar un punto como visitado (llama al backend)
 function marcarVisitado(id) {
+    const idRecolector = 1; // ⚠️ Aquí pones el ID real del recolector (puede venir de login u otro valor dinámico)
     fetch(`http://127.0.0.1:5000/marcar-visitado/${id}`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id_recolector: idRecolector })
     })
     .then(res => res.json())
     .then(data => {
-        //alert(data.mensaje || data.error);
-
         if (!data.error) {
             // Eliminamos el marcador del mapa y del objeto
             if (markers[id]) {
@@ -70,6 +67,8 @@ function marcarVisitado(id) {
                 map.removeLayer(rutaActual);
                 rutaActual = null;
             }
+        } else {
+            alert(data.error);
         }
     });
 }
@@ -82,12 +81,10 @@ function mostrarRuta(inicio, destino) {
         .then(res => res.json())
         .then(data => {
             const coords = data.coordenadas;
-
             if (coords.length > 0) {
                 if (rutaActual) map.removeLayer(rutaActual);  // Quita anterior
                 rutaActual = L.polyline(coords, { color: 'blue' }).addTo(map);
                 map.fitBounds(rutaActual.getBounds());
-
                 // Marcadores de inicio y destino
                 L.marker(coords[0], {icon: iconoPersona}).addTo(map).bindPopup("Inicio").openPopup();
                 L.marker(coords[coords.length - 1]).addTo(map).bindPopup("Destino");
@@ -124,6 +121,20 @@ function marcarRuta(destLat, destLon) {
         });
 }
 
+// Mostrar barra lateral con detalle
+function mostrarDetalleSidebar() {
+    const sidebar = document.getElementById('sidebar-detalle');
+    const content = document.getElementById('sidebar-content');
+    fetch('/static/ctn_p_basura.html')
+        .then(res => res.text())
+        .then(html => {
+            content.innerHTML = html;
+            sidebar.style.display = 'block';
+        });
+}
+function cerrarSidebarDetalle() {
+    document.getElementById('sidebar-detalle').style.display = 'none';
+}
 
 // Cargar los puntos cuando se carga el script
 cargarPuntos();

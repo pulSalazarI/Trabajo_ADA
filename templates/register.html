@@ -1,42 +1,40 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
-    <link rel="stylesheet" href="../static/style2.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
-<body>
-    <div class="background-image"></div>
-    <div class="register-container">
-        <span class="close-btn" title="Cerrar">&times;</span>
-        <h2>Registro</h2>
-        <div id="message-area"></div>
-        <form action="#" method="POST">
-            <div class="input-group">
-                <input type="text" id="username" placeholder="Nombre de usuario" required>
-                <i class="fas fa-user"></i>
-            </div>
-            <div class="input-group">
-                <input type="email" id="email" placeholder="Correo electrónico" required>
-                <i class="fas fa-envelope"></i>
-            </div>
-            <div class="input-group password-group">
-                <input type="password" id="password" placeholder="Contraseña" required>
-                <i class="fas fa-lock"></i>
-                <span class="toggle-password" title="Mostrar/Ocultar contraseña"><i class="fas fa-eye"></i></span>
-            </div>
-            <div class="terms-checkbox">
-                <input type="checkbox" id="terms" required>
-                <label for="terms">Acepto los <a href="#" target="_blank">términos y condiciones</a></label>
-            </div>
-            <button type="submit" class="register-btn">Registrarse</button>
-        </form>
-        <div class="login-link">
-            <span>¿Ya tienes una cuenta? <a href="login.html">Inicia sesión</a></span>
-        </div>
+{% extends 'base.html' %}
+{% block title %}Crear Cuenta - Registro Seguro{% endblock %}
+{% block head_styles %}
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/images/Fondo_bienvenida.webp');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
+        }
+        .main-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            min-height: calc(100vh - 80px);
+        }
+        .left-section { flex: 1; max-width: 500px; }
+        .intro-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 20px; color: #fff; }
+        .intro-text { font-size: 1rem; line-height: 1.6; color: #fff; margin-bottom: 40px; }
+        .right-section { flex: 0 0 300px; margin-left: 40px; }
+        @media (max-width: 768px) {
+            .main-content { flex-direction: column; text-align: center; padding: 40px 20px; }
+            .right-section { flex: none; margin-left: 0; margin-top: 40px; width: 100%; max-width: 400px; }
+            .intro-title { font-size: 2rem; }
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="register-wrapper">
+        {% include 'register_conponet.html' %}
     </div>
-    <script src="../static/script2.js"></script>
-</body>
-</html>
+{% endblock %}
+{% block scripts %}{% endblock %}

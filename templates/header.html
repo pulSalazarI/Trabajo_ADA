@@ -14,11 +14,21 @@
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
+            padding-top: 70px; /* Espacio para el header fijo */
         }
 
         .header {
             background-color: #000000;
             padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        .header, .header * {
+            color: #fff !important;
         }
 
         .container {
@@ -63,18 +73,17 @@
             background-color: #333;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .container {
                 flex-direction: column;
                 gap: 15px;
             }
-            
+
             .nav-menu {
                 flex-wrap: wrap;
                 justify-content: center;
             }
-            
+
             .nav-link {
                 padding: 10px 15px;
                 font-size: 1rem;
@@ -85,30 +94,25 @@
 <body>
     <header class="header">
         <div class="container">
-            <div class="logo">Chris Hartsch</div>
+            <div class="logo">BASURINI</div>
             <nav>
                 <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="#webdesign" class="nav-link">Webdesign</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#printstuff" class="nav-link">Printstuff</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#logodesign" class="nav-link">Logodesign</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#artwork" class="nav-link">Artwork</a>
-                    </li>
+                    <li class="nav-item"><a href="#" id="btn-inicio" class="nav-link">Inicio</a></li>
+                    <li class="nav-item"><a href="#" id="btn-mision" class="nav-link">Misión</a></li>
+                    <li class="nav-item"><a href="#" id="btn-vision" class="nav-link">Visión</a></li>
+                    <li class="nav-item"><a href="#" id="btn-historia" class="nav-link">Historia</a></li>
+                    <li class="nav-item"><a href="#artwork" class="nav-link">Iniciar Sesión</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <!-- Contenido de ejemplo -->
-    <main style="padding: 50px 20px; text-align: center;">
-        <h1 style="color: #333;">Contenido del sitio</h1>
-        <p style="color: #666;">Aquí va el resto del contenido...</p>
+    <!-- Aquí comienza tu contenido -->
+    <main>
+        <section style="padding: 40px; text-align: center;">
+            <h1>Bienvenido a Basurini</h1>
+            <p>Contenido de prueba para verificar el header fijo</p>
+        </section>
     </main>
 </body>
 </html>

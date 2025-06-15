@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - Registro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8fafc;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 32px 64px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .container h1,
+        .container label,
+        .container .subtitle,
+        .container input,
+        .container .password-strength {
+            background: rgba(255, 255, 255, 1);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo::after {
+            content: '👤';
+            font-size: 24px;
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #718096;
+            font-size: 16px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        label {
+            display: block;
+            color: #4a5568;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.025em;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 400;
+            color: #2d3748;
+            background: #ffffff;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        input:valid {
+            border-color: #48bb78;
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .strength-bar {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fc8181, #f6ad55, #68d391);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: #000000;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 8px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            background: #333333;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 24px;
+                margin: 10px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .form-row .form-group {
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"></div>
+            <h1>Crear Cuenta</h1>
+            <p class="subtitle">Únete a nuestra comunidad</p>
+        </div>
+
+        <form id="registroForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <input type="text" id="usuario" name="usuario" required>
+            </div>
+
+            <div class="form-group">
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <input type="password" id="password" name="password" required>
+                <div class="password-strength">
+                    <div class="strength-bar">
+                        <div class="strength-fill" id="strengthFill"></div>
+                    </div>
+                    <span id="strengthText">Ingresa tu contraseña</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirmar Contraseña</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                Crear Mi Cuenta
+            </button>
+        </form>
+    </div>
+
+    <script>
+        // Validación de fortaleza de contraseña
+        const passwordInput = document.getElementById('password');
+        const strengthFill = document.getElementById('strengthFill');
+        const strengthText = document.getElementById('strengthText');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            let text = '';
+
+            if (password.length >= 8) strength += 25;
+            if (/[a-z]/.test(password)) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 25;
+            if (/[0-9]/.test(password) || /[^A-Za-z0-9]/.test(password)) strength += 25;
+
+            strengthFill.style.width = strength + '%';
+
+            if (strength < 50) {
+                text = 'Contraseña débil';
+                strengthFill.style.background = '#fc8181';
+            } else if (strength < 75) {
+                text = 'Contraseña media';
+                strengthFill.style.background = '#f6ad55';
+            } else {
+                text = 'Contraseña fuerte';
+                strengthFill.style.background = '#68d391';
+            }
+
+            strengthText.textContent = text;
+        });
+
+        // Validación de confirmación de contraseña
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        
+        confirmPasswordInput.addEventListener('input', function() {
+            const password = passwordInput.value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword && password !== confirmPassword) {
+                this.style.borderColor = '#fc8181';
+            } else {
+                this.style.borderColor = '#e2e8f0';
+            }
+        });
+
+        // Manejo del formulario
+        document.getElementById('registroForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            // Mostrar componente de confirmación
+            fetch('/static/ctn_confitrmacion.html')
+                .then(response => response.text())
+                .then(html => {
+                    document.body.innerHTML = html;
+                });
+        });
+    </script>
+</body>
+</html>

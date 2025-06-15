@@ -59,14 +59,25 @@
 <div class="form-box">
     <h1>REGÍSTRATE</h1>
 
-    <h2>Ingresa tu nombre</h2>
-    <input type="text" placeholder="Ingresa tu nombre">
+    <h2>Nombre</h2>
+    <input type="text" id="nombre" placeholder="Ingresa tu nombre">
 
-    <h2>Ingresa tu Email</h2>
-    <input type="email" placeholder="Ingresa tu Email">
+    <h2>Email</h2>
+    <input type="email" id="email" placeholder="Ingresa tu Email">
 
-    <h2>Ingresa tu usuario</h2>
-    <input type="text" placeholder="Ingresa tu usuario">
+    <h2>Crea tu usuario</h2>
+    <input type="text" id="usuario" placeholder="Ejmplo: Patito">
 
-    <button>Registrarse</button>
+    <button id="btn-registrarse">Registrarse</button>
 </div>
+<script>
+    document.getElementById('btn-registrarse').addEventListener('click', function() {
+        const nombre = document.getElementById('nombre').value;
+        const email = document.getElementById('email').value;
+        const usuario = document.getElementById('usuario').value;
+        sessionStorage.setItem('registro_nombre', nombre);
+        sessionStorage.setItem('registro_email', email);
+        sessionStorage.setItem('registro_usuario', usuario);
+        window.location.href = '/register';
+    });
+</script>
