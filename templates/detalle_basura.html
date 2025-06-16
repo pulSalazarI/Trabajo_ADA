@@ -1,87 +1,170 @@
 <style>
     .detalle-basura-container {
-        max-width: 800px;
-        margin: 40px auto;
-        background-color: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .detalle-basura-titulo {
-        font-size: 28px;
-        margin-bottom: 10px;
-    }
-    .detalle-basura-publicado-por {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 8px;
-    }
-    .detalle-basura-recompensa {
-        font-size: 18px;
-        color: #2196F3;
-        font-weight: bold;
-        margin-bottom: 18px;
-    }
-    .detalle-basura-descripcion {
-        font-size: 16px;
-        line-height: 1.5;
-        margin-bottom: 20px;
-    }
-    .detalle-basura-galeria {
+        width: 100%;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #fff;
+        border-radius: 18px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.10);
         display: flex;
         flex-direction: column;
+        align-items: center;
+        padding: 24px 0 24px 0;
+        position: relative;
+    }
+    .detalle-basura-container .detalle-basura-cabecera {
+        text-align: center;
+        margin-bottom: 16px;
+    }
+    .detalle-basura-container .detalle-basura-cabecera h1 {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #295003;
+    }
+    .detalle-basura-container .detalle-basura-cabecera img {
+        height: 48px;
+        width: 48px;
+        margin-bottom: 8px;
+    }
+    .detalle-basura-container .detalle-basura-nombre {
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 8px;
+        text-align: center;
+    }
+    .detalle-basura-container .detalle-basura-datos {
+        width: 90%;
+        margin: 0 auto 18px auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .detalle-basura-container .dato {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.1rem;
+        color: #222;
+    }
+    .detalle-basura-container .etiqueta {
+        font-weight: bold;
+        color: #295003;
+    }
+    .detalle-basura-container .valor {
+        color: #222;
+    }
+    .detalle-basura-container .detalle-basura-galeria {
+        width: 90%;
+        background: #2e7d32;
+        border-radius: 12px;
+        border: 1.5px solid #1b5e20;
+        padding: 18px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         gap: 18px;
-        max-height: 400px;
+        max-height: 500px;
         overflow-y: auto;
+        min-height: 120px;
         margin-bottom: 10px;
     }
-    .detalle-basura-galeria img {
+    .detalle-basura-container .detalle-basura-galeria img {
         width: 100%;
-        max-width: 600px;
-        height: 320px;
+        max-width: 400px;
+        height: 260px;
         object-fit: cover;
         border-radius: 12px;
         border: 1.5px solid #ccc;
+        background: #fff;
         margin: 0 auto;
         display: block;
     }
+    .detalle-basura-container .cerrar-detalle-btn {
+        position: relative;
+        display: block;
+        margin: 0 auto 16px auto;
+        top: 0;
+        right: 0;
+        font-size: 2rem;
+        color: #888;
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 100;
+        transition: color 0.2s;
+    }
+    .detalle-basura-container .cerrar-detalle-btn:hover {
+        color: #d32f2f;
+    }
 </style>
 <div class="detalle-basura-container">
-    <div class="detalle-basura-titulo" id="detalle-titulo">Título del punto</div>
-    <div class="detalle-basura-publicado-por">Publicado por: <strong id="detalle-publicado-por">usuario</strong></div>
-    <div class="detalle-basura-recompensa">Recompensa: S/ <span id="detalle-recompensa">0.00</span></div>
-    <div class="detalle-basura-descripcion" id="detalle-descripcion">
-        Descripción del punto de basura.
+    <header class="detalle-basura-cabecera">
+        <img src="/static/images/icono_personita.png" alt="Icono" style="height:48px;width:48px;margin-bottom:8px;">
+        <h1 class="detalle-basura-titulo" id="detalle-titulo"></h1>
+    </header>
+    <button class="cerrar-detalle-btn" title="Cerrar" onclick="cerrarDetalleBasura()">&times;</button>
+    <div class="detalle-basura-foto" id="detalle-foto">
+        <!-- Aquí podría ir una foto principal si se desea -->
     </div>
-    <div class="detalle-basura-galeria" id="detalle-galeria">
-        <!-- Las fotos se insertarán aquí -->
+    <h2 class="detalle-basura-nombre">Publicado por: <span id="detalle-publicado-por"></span></h2>
+    <div class="detalle-basura-datos">
+        <div class="dato">
+            <span class="etiqueta">Recompensa:</span>
+            <span class="valor" id="detalle-recompensa"></span>
+        </div>
+        <div class="dato">
+            <span class="etiqueta">Descripción:</span>
+            <span class="valor" id="detalle-descripcion"></span>
+        </div>
     </div>
+    <div class="detalle-basura-galeria" id="detalle-galeria"></div>
 </div>
 <script>
-// Cargar datos de prueba automáticamente al abrir el componente
-(function cargarDatosPrueba() {
-    const datos = {
-        titulo: 'Cámara Nikon D3500',
-        publicado_por: 'andrea_foto',
-        recompensa: '50.00',
-        descripcion: 'Cámara réflex digital ideal para principiantes. Incluye lente 18-55mm, batería y cargador. Usada pero en perfecto estado.',
-        fotos: [
-            'https://via.placeholder.com/600x320?text=Foto+1',
-            'https://via.placeholder.com/600x320?text=Foto+2',
-            'https://via.placeholder.com/600x320?text=Foto+3'
-        ]
-    };
-    document.getElementById('detalle-titulo').textContent = datos.titulo;
-    document.getElementById('detalle-publicado-por').textContent = datos.publicado_por;
-    document.getElementById('detalle-recompensa').textContent = datos.recompensa;
-    document.getElementById('detalle-descripcion').textContent = datos.descripcion;
-    const galeria = document.getElementById('detalle-galeria');
-    galeria.innerHTML = '';
-    datos.fotos.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.alt = 'Foto';
-        galeria.appendChild(img);
-    });
-})();
+// Función para cargar los detalles de un punto de basura desde el backend
+async function cargarDetalleBasura(id_p_basura) {
+    try {
+        console.log('[DEBUG] Consultando API con id_p_basura:', id_p_basura);
+        const res = await fetch(`/puntos-basura-detalles?id_p_basura=${id_p_basura}`);
+        if (!res.ok) throw new Error('No se pudo obtener el detalle');
+        const datos = await res.json();
+        console.log('[DEBUG] Datos completos recibidos del backend:', datos);
+
+        // Si el endpoint retorna un array, toma el primer elemento
+        const punto = Array.isArray(datos) ? datos[0] : datos;
+        console.log('[DEBUG] Punto de basura procesado:', punto);
+
+        document.getElementById('detalle-titulo').textContent = punto.titulo || 'Detalle del punto';
+        document.getElementById('detalle-publicado-por').textContent = punto.user_name || '';
+        document.getElementById('detalle-recompensa').textContent = punto.recompensa || '0.00';
+        document.getElementById('detalle-descripcion').textContent = punto.descripcion || '';
+        
+        const galeria = document.getElementById('detalle-galeria');
+        galeria.innerHTML = '';
+        (punto.imagenes || []).forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.alt = 'Foto';
+            galeria.appendChild(img);
+        });
+        // Mostrar el sidebar derecho si existe
+        var sidebar = document.getElementById('sidebarDerecho');
+        if (sidebar) sidebar.style.display = 'flex';
+    } catch (err) {
+        console.error('[ERROR] Ocurrió un problema al cargar el detalle del punto de basura:', err);
+        document.getElementById('detalle-titulo').textContent = 'Error al cargar detalle';
+        document.getElementById('detalle-descripcion').textContent = '';
+        document.getElementById('detalle-galeria').innerHTML = '';
+    }
+}
+
+function cerrarDetalleBasura() {
+    // Borra el contenido del detalle para cerrarlo visualmente
+    const detalle = document.querySelector('.detalle-basura-container');
+    if (detalle && detalle.parentNode) {
+        detalle.parentNode.innerHTML = '';
+    }
+}
+
+// Eliminar cualquier escucha de eventos externos para cargar el detalle
+// Solo se debe llenar y abrir el componente desde cargarDetalleDirecto
 </script>

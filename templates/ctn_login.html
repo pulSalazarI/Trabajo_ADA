@@ -116,9 +116,45 @@
     </div>
 </div>
 <script>
-    document.querySelector('.register-container form').addEventListener('submit', function(e) {
+    // Mostrar/ocultar contraseña
+    document.querySelector('.toggle-password').addEventListener('click', function() {
+        const pwd = document.getElementById('password');
+        pwd.type = pwd.type === 'password' ? 'text' : 'password';
+        this.querySelector('i').classList.toggle('fa-eye-slash');
+    });
+
+    document.querySelector('.register-container form').addEventListener('submit', async function(e) {
         e.preventDefault();
-        sessionStorage.setItem('sesion_iniciada', '1'); // Marcar sesión iniciada
-        window.location.href = '/mapa_basura';
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const messageArea = document.getElementById('message-area');
+        messageArea.textContent = '';
+
+        if (!username || !email || !password) {
+            messageArea.textContent = 'Completa todos los campos.';
+            messageArea.style.color = 'red';
+            return;
+        }
+
+        try {
+            const res = await fetch('/autentificacion');
+            if (!res.ok) throw new Error('Error al conectar con el servidor');
+            const usuarios = await res.json();
+            const usuario = usuarios.find(u =>
+                (u.user_name === username || u.correo === email) && u.contrasena === password
+            );
+            if (usuario) {
+                sessionStorage.setItem('sesion_iniciada', '1');
+                sessionStorage.setItem('usuario', usuario.user_name);
+                window.location.href = '/mapa_basura';
+            } else {
+                messageArea.textContent = 'Usuario, correo o contraseña incorrectos.';
+                messageArea.style.color = 'red';
+            }
+        } catch (err) {
+            messageArea.textContent = 'Error de autenticación.';
+            messageArea.style.color = 'red';
+        }
     });
 </script>

@@ -38,6 +38,102 @@ def detalle_basura():
 def base():
     return render_template('base.html')
 
+@app.route('/perfil-usuario', methods=['GET'])
+def obtener_perfil_usuario():
+    user_name = request.args.get("user_name")
+    if not user_name:
+        return jsonify({'error': 'Falta el parámetro user_name'}), 400
+
+    # Paso 1: Obtener datos del usuario
+    url_usuario = f"{SUPABASE_URL}/rest/v1/usuarios?select=id_usuario,nombres,honor,saldo,correo&user_name=eq.{user_name}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    response_usuario = requests.get(url_usuario, headers=headers)
+    if response_usuario.status_code != 200 or not response_usuario.json():
+        return jsonify({'error': 'Usuario no encontrado'}), 404
+
+    usuario = response_usuario.json()[0]
+    id_usuario = usuario['id_usuario']
+
+    # Paso 2: Contar puntos recolectados
+    url_recolectados = f"{SUPABASE_URL}/rest/v1/p_basura?select=id_p_basura&select=count&and=(id_recolector.eq.{id_usuario},estado_activo.eq.0)"
+    response_recolectados = requests.get(url_recolectados, headers=headers)
+
+    total_puntos = 0
+    if response_recolectados.status_code == 200 and isinstance(response_recolectados.json(), list):
+        total_puntos = len(response_recolectados.json())
+
+    # Armar resultado
+    resultado = {
+        'nombres': usuario['nombres'],
+        'honor': usuario['honor'],
+        'saldo': usuario['saldo'],
+        'correo': usuario['correo'],
+        'total_puntos_recolectados': total_puntos
+    }
+
+    return jsonify(resultado)
+
+
+
+# Ruta para obtener usuarios desde Supabase
+@app.route('/autentificacion', methods=['GET'])
+def obtener_usuarios():
+    url = f"{SUPABASE_URL}/rest/v1/usuarios?select=user_name,correo,contrasena"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({'error': 'No se pudieron obtener los usuarios'}), 500
+
+# Ruta para obtener puntos de basura desde Supabase
+
+
+@app.route('/puntos-basura-detalles', methods=['GET'])
+def detalle_punto_basura():
+    id_p_basura = request.args.get("id_p_basura")
+    if not id_p_basura:
+        return jsonify({'error': 'Falta el parámetro id_p_basura'}), 400
+
+    url = f"{SUPABASE_URL}/rest/v1/p_basura?select=id_p_basura,recompensa,descripcion,usuarios!p_basura_id_usuario_fkey(user_name),imagen(url)&id_p_basura=eq.{id_p_basura}"
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    print("[INFO] Solicitando datos a Supabase con URL:", url)
+    response = requests.get(url, headers=headers)
+    print("[INFO] Código de respuesta:", response.status_code)
+    print("[INFO] Respuesta Supabase:", response.text)
+
+    if response.status_code == 200:
+        data = response.json()
+        if not data:
+            return jsonify({'error': 'No se encontró el punto de basura'}), 404
+
+        punto = data[0]
+        resultado = {
+            'user_name': punto.get('usuarios', {}).get('user_name'),
+            'recompensa': punto.get('recompensa'),
+            'descripcion': punto.get('descripcion'),
+            'imagenes': [img['url'] for img in punto.get('imagen', [])]
+        }
+        return jsonify(resultado)
+    else:
+        return jsonify({'error': 'Error al obtener los datos'}), 500
+
+
+
 
 
 # Función para obtener puntos de basura desde Supabase
@@ -81,8 +177,11 @@ def marcar_visitado(punto_id):
     data = {"estado_activo": 0}
     response = requests.patch(url, headers=headers, json=data)
     if response.status_code in [200, 204]:
-        return jsonify({"mensaje": f"Punto {punto_id} marcado como visitado"})
+        mensaje = f"Punto {punto_id} marcado como visitado"
+        print(f"[INFO] {mensaje}")
+        return jsonify({"mensaje": mensaje})
     else:
+        print(f"[ERROR] No se pudo actualizar el punto {punto_id} en Supabase")
         return jsonify({"error": "No se pudo actualizar el estado en Supabase"}), 400
     
 
@@ -130,6 +229,8 @@ def obtener_ruta():
         return jsonify({"coordenadas": coords})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
 
 
 if __name__ == '__main__':

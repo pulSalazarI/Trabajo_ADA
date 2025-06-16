@@ -22,6 +22,7 @@ body {
 }
 /* Cabecera añadida */
 .perfil-cabecera {
+    
     background-color: #0d2c02;
     color: rgb(193, 229, 107);
     text-align: center;
@@ -31,6 +32,7 @@ body {
 }
 
 .perfil-cabecera h1 {
+    height: 10px;
     margin: 0;
     font-size: 22px;
     letter-spacing: 2px;
@@ -71,9 +73,9 @@ body {
     margin-bottom: 18px;
     display: flex;
     align-items: center;
-    flex-direction: row; /* Asegura que todo esté en línea */
+    flex-direction: row;
+    gap: 10px; /* Espacio entre elementos */
 }
-
 .etiqueta {
     font-weight: bold;
     width: auto; /* Elimina el ancho fijo */

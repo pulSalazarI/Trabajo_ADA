@@ -47,29 +47,36 @@
         height: 100%;
         min-height: 100%;
     }
-    .contenedor-derecho-detalle {
-        width: 350px;
-        background: transparent !important;
-        height: 100%;
-        display: none; /* Oculto por defecto */
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        position: relative;
-        border: none !important;
-        box-shadow: none !important;
-        padding: 0;
-        z-index: 10;
-        right: 0;
-        transition: none !important;
-    }
-    .contenedor-derecho-detalle.visible {
-        display: flex !important;
-    }
     /* Leaflet zoom control fix */
     .leaflet-control-container .leaflet-top.leaflet-left {
         top: 90px !important; /* Baja el control debajo del header */
         left: 10px !important;
+    }
+    .sidebar-derecho {
+        width: 320px;
+        opacity: 100%;
+        background: #0e0e0e;
+        box-shadow: -2px 0 10px rgb(191, 22, 22);
+        padding: 0;
+        overflow-y: auto;
+        z-index: 10;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: static;
+        border: none !important;
+        box-shadow: none !important;
+        transition: none !important;
+    }
+    #detalleBasuraContent {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: stretch;
     }
 </style>
 <div class="layout-mapa">
@@ -81,19 +88,34 @@
         <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
         <script src="{{ url_for('static', filename='script.js') }}"></script>
     </main>
-    <div class="contenedor-derecho-detalle" id="contenedorDetalleDerecho">
+    <aside class="sidebar-derecho" id="sidebarDerecho">
         <div id="detalleBasuraContent"></div>
-    </div>
+    </aside>
 </div>
 <script>
-    window.addEventListener('mostrarDetalleBasura', function(e) {
-        fetch('/detalle_basura')
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById('detalleBasuraContent').innerHTML = html;
-                document.getElementById('contenedorDetalleDerecho').classList.add('visible');
-            });
-    });
+window.addEventListener('mostrarDetalleBasura', function(e) {
+    const sidebar = document.getElementById('sidebarDerecho');
+    // Asegura que el sidebar esté visible
+    sidebar.style.display = 'flex';
+    // Evita recargar el componente si ya está cargado para el mismo punto
+    const currentDetalle = document.getElementById('detalleBasuraContent');
+    if (currentDetalle && currentDetalle.getAttribute('data-id') == e.detail.puntoId) {
+        // Ya está cargado el detalle para este punto, no recargar
+        return;
+    }
+    fetch('/detalle_basura')
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('detalleBasuraContent').innerHTML = html;
+            document.getElementById('detalleBasuraContent').setAttribute('data-id', e.detail.puntoId);
+            // Dispara solo el evento detalleBasuraIdSeleccionado
+            if (e.detail && e.detail.puntoId) {
+                setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('detalleBasuraIdSeleccionado', { detail: { id_p_basura: e.detail.puntoId } }));
+                }, 50);
+            }
+        });
+});
 </script>
 {% endblock %}
 

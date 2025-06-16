@@ -1,25 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Datos del usuario (simulados o desde API)
-    const usuario = {
-        nombres: "Raquel Sánchez",
-        usuario: "RaquelS",
-        honor: 85, // Porcentaje (0-100)
-        calificacion: 4.7,
-        saldo: 1850.75,
-        correo: "raquelS@gmail.com"
-    };
+    // Obtener el nombre de usuario autenticado desde sessionStorage
+    const userName = sessionStorage.getItem('usuario');
+    if (!userName) return;
 
-    // Formateador de saldo
-    const formatearSaldo = (saldo) => {
-        return saldo.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    };
+    // Consumir la API de perfil
+    fetch(`/perfil-usuario?user_name=${encodeURIComponent(userName)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && !data.error) {
+                // Si la API retorna el usuario directamente
+                const usuario = data;
+                // Si la API retorna {usuario: {...}}
+                // const usuario = data.usuario || data;
+                document.getElementById('nombre-usuario').textContent = usuario.nombres || '';
+                document.getElementById('honor-barra').style.width = (usuario.honor || 0) + '%';
+                document.getElementById('honor-texto').textContent = (usuario.honor || 0) + '%';
+                document.getElementById('saldo').textContent = usuario.saldo !== undefined ? usuario.saldo : '';
+                document.getElementById('correo').textContent = usuario.correo || '';
+                document.getElementById('total-puntos').textContent = usuario.total_puntos_recolectados !== undefined ? usuario.total_puntos_recolectados : '';
+            }
+        });
 
-    // Inyectar datos en el HTML
-    document.getElementById('nombres').textContent = usuario.nombres;
-    document.getElementById('usuario').textContent = usuario.usuario;
-    document.getElementById('honor-barra').style.width = `${usuario.honor}%`;
-    document.getElementById('honor-texto').textContent = `${usuario.honor}%`;
-    document.getElementById('calificacion').textContent = usuario.calificacion.toFixed(1);Add commentMore actions
-    document.getElementById('saldo').textContent = formatearSaldo(usuario.saldo);
-    document.getElementById('correo').textContent = usuario.correo;
+    document.getElementById('btn-publicar').addEventListener('click', function() {
+        window.location.href = '/publicar';
+    });
 });

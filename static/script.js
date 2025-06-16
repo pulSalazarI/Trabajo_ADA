@@ -51,9 +51,9 @@ function cargarPuntos() {
                 marker.bindPopup(`
                 Punto ID: ${p.id} <br>
                 Visitado: ${p.visitado} <br>
-                <button onclick=\"marcarVisitado(${p.id})\" disabled>Marcar Visitado</button><br>
-                <button onclick=\"marcarRuta(${p.lat}, ${p.lon})\">Marcar Ruta</button><br>
-                <button onclick=\"window.dispatchEvent(new CustomEvent('mostrarDetalleBasura', { detail: { puntoId: ${p.id} } }))\">Detalle</button>
+                <button onclick="console.log('Botón Marcar Visitado presionado para punto ${p.id}');marcarVisitado(${p.id})" disabled>Marcar Visitado</button><br>
+                <button onclick="console.log('Botón Marcar Ruta presionado para punto ${p.id}');marcarRuta(${p.lat}, ${p.lon})">Marcar Ruta</button><br>
+                <button onclick="console.log('Botón Detalle presionado para punto ${p.id}');cargarDetalleDirecto(${p.id})">Detalle</button>
                 `);
             });
         })
@@ -136,52 +136,56 @@ function marcarRuta(destLat, destLon) {
 }
 
 
-
-
-
-
-// Mostrar barra lateral con detalle
-function mostrarDetalleSidebar() {
-    const sidebar = document.getElementById('sidebar-detalle');
-    const content = document.getElementById('sidebar-content');
-    fetch('/static/ctn_p_basura.html')
-        .then(res => res.text())
-        .then(html => {
-            content.innerHTML = html;
-            sidebar.style.display = 'block';
+// Nueva función para consumir la API directamente al presionar el botón Detalle
+function cargarDetalleDirecto(id_p_basura) {
+    fetch(`/puntos-basura-detalles?id_p_basura=${id_p_basura}`)
+        .then(res => res.json())
+        .then(data => {
+            console.log('[DETALLE DIRECTO] Datos recibidos:', data);
+            // Mostrar los datos directamente en el componente detalle_basura.html
+            mostrarDetalleEnSidebar(data);
+        })
+        .catch(err => {
+            console.error('[DETALLE DIRECTO] Error al consultar la API:', err);
         });
 }
-function cerrarSidebarDetalle() {
-    document.getElementById('sidebar-detalle').style.display = 'none';
+
+function mostrarDetalleEnSidebar(data) {
+    // Cargar el HTML del componente detalle_basura.html en el sidebar
+    fetch('/detalle_basura')
+        .then(res => res.text())
+        .then(html => {
+            document.getElementById('detalleBasuraContent').innerHTML = html;
+            setTimeout(() => {
+                console.log('[DEBUG] Data recibido para llenar el detalle:', data);
+                // Si data tiene user_name, recompensa, descripcion, imagenes directamente
+                const punto = data.user_name ? data : (data.resultado && data.resultado[0] ? data.resultado[0] : null);
+                if (punto) {
+                    console.log('[DEBUG] Punto procesado para el detalle:', punto);
+                    document.getElementById('detalle-titulo').textContent = 'Punto de basura';
+                    document.getElementById('detalle-publicado-por').textContent = punto.user_name || punto.id_usuario || '';
+                    document.getElementById('detalle-recompensa').textContent = punto.recompensa || '0.00';
+                    document.getElementById('detalle-descripcion').textContent = punto.descripcion || '';
+                    const galeria = document.getElementById('detalle-galeria');
+                    galeria.innerHTML = '';
+                    (punto.imagenes || []).forEach(url => {
+                        const img = document.createElement('img');
+                        img.src = url;
+                        img.alt = 'Foto';
+                        galeria.appendChild(img);
+                    });
+                } else {
+                    console.warn('[DEBUG] No se encontró punto válido en la respuesta:', data);
+                }
+            }, 50);
+        });
 }
 
-// Reemplaza el botón Detalle para mostrar el slider en vez de navegar
-function mostrarSliderDetalle() {
-    let slider = document.getElementById('sliderDetalleBasura');
-    if (!slider) {
-        slider = document.createElement('aside');
-        slider.id = 'sliderDetalleBasura';
-        slider.className = 'sidebar-derecha slider-popup';
-        slider.innerHTML = `
-            <div class="toggle-sidebar-btn" id="toggleSliderDetalleBtn" style="position:absolute;left:-18px;top:50%;transform:translateY(-50%);z-index:20;">
-                <span class="triangle"></span>
-            </div>
-            <div id="detalleBasuraContent"></div>
-        `;
-        document.body.appendChild(slider);
-        // Cargar el contenido del componente
-        fetch('/detalle_basura')
-            .then(res => res.text())
-            .then(html => {
-                document.getElementById('detalleBasuraContent').innerHTML = html;
-            });
-        // Botón retraer
-        slider.querySelector('#toggleSliderDetalleBtn').onclick = function() {
-            slider.classList.toggle('retraida');
-        };
-    } else {
-        slider.classList.remove('retraida');
-        slider.style.display = 'flex';
+// Función global para cerrar el detalle del sidebar derecho
+function cerrarDetalleBasura() {
+    const detalle = document.querySelector('.detalle-basura-container');
+    if (detalle && detalle.parentNode) {
+        detalle.parentNode.innerHTML = '';
     }
 }
 
