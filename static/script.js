@@ -25,9 +25,24 @@ const markers = {};
 // Función para cargar los puntos desde el backend y mostrarlos en el mapa
 function cargarPuntos() {
     fetch('http://127.0.0.1:5000/puntos')
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) {
+                console.error('Error en la respuesta de /puntos:', res.status, res.statusText);
+                return [];
+            }
+            return res.json();
+        })
         .then(puntos => {
+            console.log('Respuesta de /puntos:', puntos);
+            if (!Array.isArray(puntos)) {
+                console.error('La respuesta de /puntos no es un array:', puntos);
+                return;
+            }
             puntos.forEach(p => {
+                if (typeof p.lat !== 'number' || typeof p.lon !== 'number') {
+                    console.error('Punto inválido:', p);
+                    return;
+                }
                 // Creamos marcador para cada punto
                 const marker = L.marker([p.lat, p.lon]).addTo(map);
                 // Guardamos el marcador en el objeto para poder eliminarlo después
@@ -36,26 +51,27 @@ function cargarPuntos() {
                 marker.bindPopup(`
                 Punto ID: ${p.id} <br>
                 Visitado: ${p.visitado} <br>
-                <button onclick="marcarVisitado(${p.id})" disabled>Marcar Visitado</button><br>
-                <button onclick="marcarRuta(${p.lat}, ${p.lon})">Marcar Ruta</button><br>
-                <button onclick="window.location.href='/detalle_basura'">Detalle</button>
+                <button onclick=\"marcarVisitado(${p.id})\" disabled>Marcar Visitado</button><br>
+                <button onclick=\"marcarRuta(${p.lat}, ${p.lon})\">Marcar Ruta</button><br>
+                <button onclick=\"window.dispatchEvent(new CustomEvent('mostrarDetalleBasura', { detail: { puntoId: ${p.id} } }))\">Detalle</button>
                 `);
             });
+        })
+        .catch(err => {
+            console.error('Error al obtener los puntos:', err);
         });
 }
 
 // Función para marcar un punto como visitado (llama al backend)
+// Función para marcar un punto como visitado (llama al backend)
 function marcarVisitado(id) {
-    const idRecolector = 1; // ⚠️ Aquí pones el ID real del recolector (puede venir de login u otro valor dinámico)
     fetch(`http://127.0.0.1:5000/marcar-visitado/${id}`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ id_recolector: idRecolector })
+        method: 'POST'
     })
     .then(res => res.json())
     .then(data => {
+        //alert(data.mensaje || data.error);
+
         if (!data.error) {
             // Eliminamos el marcador del mapa y del objeto
             if (markers[id]) {
@@ -67,8 +83,6 @@ function marcarVisitado(id) {
                 map.removeLayer(rutaActual);
                 rutaActual = null;
             }
-        } else {
-            alert(data.error);
         }
     });
 }
@@ -121,6 +135,11 @@ function marcarRuta(destLat, destLon) {
         });
 }
 
+
+
+
+
+
 // Mostrar barra lateral con detalle
 function mostrarDetalleSidebar() {
     const sidebar = document.getElementById('sidebar-detalle');
@@ -134,6 +153,36 @@ function mostrarDetalleSidebar() {
 }
 function cerrarSidebarDetalle() {
     document.getElementById('sidebar-detalle').style.display = 'none';
+}
+
+// Reemplaza el botón Detalle para mostrar el slider en vez de navegar
+function mostrarSliderDetalle() {
+    let slider = document.getElementById('sliderDetalleBasura');
+    if (!slider) {
+        slider = document.createElement('aside');
+        slider.id = 'sliderDetalleBasura';
+        slider.className = 'sidebar-derecha slider-popup';
+        slider.innerHTML = `
+            <div class="toggle-sidebar-btn" id="toggleSliderDetalleBtn" style="position:absolute;left:-18px;top:50%;transform:translateY(-50%);z-index:20;">
+                <span class="triangle"></span>
+            </div>
+            <div id="detalleBasuraContent"></div>
+        `;
+        document.body.appendChild(slider);
+        // Cargar el contenido del componente
+        fetch('/detalle_basura')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('detalleBasuraContent').innerHTML = html;
+            });
+        // Botón retraer
+        slider.querySelector('#toggleSliderDetalleBtn').onclick = function() {
+            slider.classList.toggle('retraida');
+        };
+    } else {
+        slider.classList.remove('retraida');
+        slider.style.display = 'flex';
+    }
 }
 
 // Cargar los puntos cuando se carga el script

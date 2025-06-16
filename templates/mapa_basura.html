@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}Mapa de Puntos de Basura{% endblock %}
+
+{% block content %}
+<style>
+    .layout-mapa {
+        display: flex;
+        height: 100%;
+        min-height: 100%;
+        width: 100%;
+    }
+    .sidebar-izquierda {
+        width: 320px;
+        background: #295003;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+        padding: 0;
+        overflow-y: auto;
+        z-index: 10;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* Centra verticalmente el contenido */
+    }
+    .perfil-container {
+        margin-top: 0;
+        margin-bottom: 0;
+        align-self: center;
+    }
+    .main-mapa {
+        flex: 1;
+        position: relative;
+        height: 100%;
+        min-width: 0;
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+    }
+    #map {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        flex: 1;
+    }
+    html, body, .main-content {
+        height: 100%;
+        min-height: 100%;
+    }
+    .contenedor-derecho-detalle {
+        width: 350px;
+        background: transparent !important;
+        height: 100%;
+        display: none; /* Oculto por defecto */
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        position: relative;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0;
+        z-index: 10;
+        right: 0;
+        transition: none !important;
+    }
+    .contenedor-derecho-detalle.visible {
+        display: flex !important;
+    }
+    /* Leaflet zoom control fix */
+    .leaflet-control-container .leaflet-top.leaflet-left {
+        top: 90px !important; /* Baja el control debajo del header */
+        left: 10px !important;
+    }
+</style>
+<div class="layout-mapa">
+    <aside class="sidebar-izquierda">
+        {% include "ctn_perfil.html" %}
+    </aside>
+    <main class="main-mapa">
+        <div id="map"></div>
+        <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
+    </main>
+    <div class="contenedor-derecho-detalle" id="contenedorDetalleDerecho">
+        <div id="detalleBasuraContent"></div>
+    </div>
+</div>
+<script>
+    window.addEventListener('mostrarDetalleBasura', function(e) {
+        fetch('/detalle_basura')
+            .then(res => res.text())
+            .then(html => {
+                document.getElementById('detalleBasuraContent').innerHTML = html;
+                document.getElementById('contenedorDetalleDerecho').classList.add('visible');
+            });
+    });
+</script>
+{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+{% endblock %}

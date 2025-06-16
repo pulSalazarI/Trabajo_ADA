@@ -1,72 +1,87 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Perfil del Objeto</title>
-    <style>
-        body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        }
-
-        .container {
+<style>
+    .detalle-basura-container {
         max-width: 800px;
         margin: 40px auto;
         background-color: white;
         padding: 20px;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .titulo {
+    }
+    .detalle-basura-titulo {
         font-size: 28px;
         margin-bottom: 10px;
-        }
-
-        .publicado-por {
+    }
+    .detalle-basura-publicado-por {
         font-size: 16px;
         color: #666;
-        margin-bottom: 20px;
-        }
-
-        .descripcion {
+        margin-bottom: 8px;
+    }
+    .detalle-basura-recompensa {
+        font-size: 18px;
+        color: #2196F3;
+        font-weight: bold;
+        margin-bottom: 18px;
+    }
+    .detalle-basura-descripcion {
         font-size: 16px;
         line-height: 1.5;
         margin-bottom: 20px;
-        }
-
-        .galeria {
+    }
+    .detalle-basura-galeria {
         display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        }
-
-        .galeria img {
-        width: 150px;
-        height: 150px;
+        flex-direction: column;
+        gap: 18px;
+        max-height: 400px;
+        overflow-y: auto;
+        margin-bottom: 10px;
+    }
+    .detalle-basura-galeria img {
+        width: 100%;
+        max-width: 600px;
+        height: 320px;
         object-fit: cover;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        }
-    </style>
-    </head>
-    <body>
-
-    <div class="container">
-        <div class="titulo">Cámara Nikon D3500</div>
-        <div class="publicado-por">Publicado por: <strong>andrea_foto</strong></div>
-
-        <div class="descripcion">
-        Cámara réflex digital ideal para principiantes. Incluye lente 18-55mm, batería y cargador. Usada pero en perfecto estado.
-        </div>
-
-        <div class="galeria">
-        <img src="https://via.placeholder.com/150" alt="Foto 1">
-        <img src="https://via.placeholder.com/150" alt="Foto 2">
-        <img src="https://via.placeholder.com/150" alt="Foto 3">
-        </div>
+        border-radius: 12px;
+        border: 1.5px solid #ccc;
+        margin: 0 auto;
+        display: block;
+    }
+</style>
+<div class="detalle-basura-container">
+    <div class="detalle-basura-titulo" id="detalle-titulo">Título del punto</div>
+    <div class="detalle-basura-publicado-por">Publicado por: <strong id="detalle-publicado-por">usuario</strong></div>
+    <div class="detalle-basura-recompensa">Recompensa: S/ <span id="detalle-recompensa">0.00</span></div>
+    <div class="detalle-basura-descripcion" id="detalle-descripcion">
+        Descripción del punto de basura.
     </div>
-
-</body>
-</html>
+    <div class="detalle-basura-galeria" id="detalle-galeria">
+        <!-- Las fotos se insertarán aquí -->
+    </div>
+</div>
+<script>
+// Cargar datos de prueba automáticamente al abrir el componente
+(function cargarDatosPrueba() {
+    const datos = {
+        titulo: 'Cámara Nikon D3500',
+        publicado_por: 'andrea_foto',
+        recompensa: '50.00',
+        descripcion: 'Cámara réflex digital ideal para principiantes. Incluye lente 18-55mm, batería y cargador. Usada pero en perfecto estado.',
+        fotos: [
+            'https://via.placeholder.com/600x320?text=Foto+1',
+            'https://via.placeholder.com/600x320?text=Foto+2',
+            'https://via.placeholder.com/600x320?text=Foto+3'
+        ]
+    };
+    document.getElementById('detalle-titulo').textContent = datos.titulo;
+    document.getElementById('detalle-publicado-por').textContent = datos.publicado_por;
+    document.getElementById('detalle-recompensa').textContent = datos.recompensa;
+    document.getElementById('detalle-descripcion').textContent = datos.descripcion;
+    const galeria = document.getElementById('detalle-galeria');
+    galeria.innerHTML = '';
+    datos.fotos.forEach(url => {
+        const img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Foto';
+        galeria.appendChild(img);
+    });
+})();
+</script>

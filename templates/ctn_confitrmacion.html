@@ -1,140 +1,100 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro Exitoso</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .success-card {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            max-width: 400px;
-            width: 90%;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        .success-card h1 {
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 700;
-            margin: 0 0 20px 0;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        .success-card p {
-            color: #e0e0e0;
-            font-size: 16px;
-            line-height: 1.5;
-            margin: 0;
-            font-weight: 400;
-        }
-
-        .icon {
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(45deg, #4CAF50, #81C784);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px auto;
-            animation: pulse 2s infinite;
-        }
-
-        .icon::after {
-            content: '✓';
-            color: white;
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .success-card:hover {
-            transform: translateY(-5px);
-            transition: transform 0.3s ease;
-        }
-
-        .btn-aceptar {
-            margin-top: 28px;
-            padding: 12px 36px;
-            background: #000;
-            color: #fff;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-        .btn-aceptar:hover {
-            background: #222;
-        }
-        @media (max-width: 480px) {
-            .success-card {
-                padding: 30px 20px;
-            }
-            
-            .success-card h1 {
-                font-size: 20px;
-            }
-            
-            .success-card p {
-                font-size: 14px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="success-card">
-        <div class="icon"></div>
-        <h1>REGISTRADO CORRECTAMENTE</h1>
-        <p>Redirígiese a su correo para completar su registro</p>
-        <button class="btn-aceptar" id="btn-aceptar">Aceptar</button>
-    </div>
-    <script>
-        document.getElementById('btn-aceptar').onclick = function() {
-            window.location.href = '/bienvenida';
-        };
-    </script>
-</body>
-</html>
+<style>
+.success-card {
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 400px;
+    width: 90%;
+    animation: slideUp 0.6s ease-out;
+}
+.success-card h1 {
+    color: #ffffff;
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 20px 0;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+.success-card p {
+    color: #e0e0e0;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    font-weight: 400;
+}
+.icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(45deg, #4CAF50, #81C784);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px auto;
+    animation: pulse 2s infinite;
+}
+.icon::after {
+    content: '✓';
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+}
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+.btn-aceptar {
+    margin-top: 28px;
+    padding: 12px 36px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.btn-aceptar:hover {
+    background: #222;
+}
+@media (max-width: 480px) {
+    .success-card {
+        padding: 30px 20px;
+    }
+    .success-card h1 {
+        font-size: 20px;
+    }
+    .success-card p {
+        font-size: 14px;
+    }
+}
+</style>
+<div class="success-card">
+    <div class="icon"></div>
+    <h1>REGISTRADO CORRECTAMENTE</h1>
+    <p>Redirígiese a su correo para completar su registro</p>
+    <button class="btn-aceptar" id="btn-aceptar-modal">Aceptar</button>
+</div>

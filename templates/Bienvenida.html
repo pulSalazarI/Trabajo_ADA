@@ -14,22 +14,44 @@
         }
         .main-content {
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            max-width: 1000px;
-            margin: 40px auto 0 auto;
-            padding: 24px 10px 24px 10px;
-            min-height: 0;
-            gap: 40px;
+            align-items: center; /* Centra verticalmente el contenido */
+            justify-content: center; /* Centra horizontalmente el contenido */
+            min-height: 80vh;
+            width: 100vw;
+            position: relative;
+            background: transparent;
+            padding: 0;
+            margin: 0;
         }
-        .presentacion-container {
+        .left-section {
             flex: 1;
-            max-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Alinea el texto a la izquierda */
+            justify-content: center;
+            padding-left: 0;
         }
-        .intro-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 18px; color: #fff; }
-        .intro-text { font-size: 1rem; line-height: 1.6; color: #c71a1a; margin-bottom: 32px; }
-        .login-container {
+        .right-section {
             flex: 0 0 350px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-end;
+            width: 0;
+            margin-left: auto;
+            
+        }
+        .intro-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 18px; color: #fff; text-align: left; }
+        .intro-text { font-size: 1.5rem; line-height: 1.6; color: #1e1d1d; margin-bottom: 32px; max-width: 500px; text-align: left; }
+        #presentacion-texto {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra el texto horizontalmente */
+            justify-content: center; /* Centra el texto verticalmente */
+            height: 100%;
+            min-height: 80vh;
+        }
+        #intro-text {
+            text-align: center !important; /* Asegura que el texto esté centrado */
             margin-left: 0;
         }
         @media (max-width: 768px) {
@@ -37,18 +59,57 @@
             .right-section { flex: none; margin-left: 0; margin-top: 40px; width: 100%; max-width: 400px; }
             .intro-title { font-size: 2rem; }
         }
+        @media (max-width: 900px) {
+            .main-content {
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 40px 10px;
+            }
+            #presentacion-texto {
+                align-items: center;
+                justify-content: center; /* Centra el contenido en pantallas más pequeñas */
+            }
+            #intro-text {
+                text-align: center !important;
+            }
+        }
     </style>
 {% endblock %}
 {% block content %}
-    <main class="main-content">
-        <div class="presentacion-container">
-            <h1 class="intro-title">Hi, I'm Chris</h1>
-            <p class="intro-text" id="intro-text">
-            ¡Bienvenido a Basurini! Tu plataforma para la gestión ecológica y responsable de residuos. Descubre cómo juntos podemos hacer la diferencia.
-            </p>
-        </div>
-        <div class="login-container">
+    <main class="main-content" style="display: flex; align-items: center; justify-content: center; min-height: 80vh; width: 100vw; position: relative; background: transparent; padding: 0; margin: 0;">
+        <!-- Contenedor del login pegado al lado derecho, con espacio de 5% -->
+        <div style="
+            position: fixed; 
+            top: 50%; 
+            right: 5vw; 
+            transform: translateY(-50%);
+            z-index: 2;
+            margin: 0; 
+            padding: 0;">
+            
             {% include 'ctn_login.html' %}
+        </div>
+        <!-- Contenedor del texto de presentación centrado -->
+        <div id="presentacion-texto" 
+            style="display:           
+            flex; flex-direction: 
+            column; align-items: 
+            center; justify-content: 
+            center; 
+            border-top-width: 50px;
+            transform: translateX(-30%);
+            
+            height: 100%; 
+            min-height: 80vh;">
+
+            <p id="intro-text" class="intro-text" style="text-align: center; max-width: 700px; font-size: 1.5rem; font-weight: bold; background: #ffffff2c; color: #0b0b0b; padding: 24px 32px; border-radius: 16px;">
+                I am a 23-year old designer trying to make the world look a bit better. I have 
+                worked for many agencies all around the world. Since early 2009 I have worked for 
+                eyesite media based in Hamburg, Germany. I am a movie and coffee addict, 
+                workaholic, I love cars, music and I am always looking for new challenges. Do you 
+                have one for me? <strong>more</strong>
+            </p>
         </div>
     </main>
 {% endblock %}
@@ -56,7 +117,7 @@
 <script>
         // Textos para cada sección
         const textos = {
-            'inicio': '¡Bienvenido a Basurini! Tu plataforma para la gestión ecológica y responsable de residuos. Descubre cómo juntos podemos hacer la diferencia.',
+            'inicio': '¡Bienvenido El términilia de los mustélidos. También se utiliza para referirse al visón europeo (Mustela lutreola), aunque esta especie se encuentra en peligro de extinción. El visón americano es una especie invasora en muchos lugares, incluyendo Europa y Argentina, donde ha tenido un impacto negativo en la fauna nativa. a Basurini! Tu plataforma para la gestión ecológica y responsable de residuos. Descubre cómo juntos podemos hacer la diferencia.',
             'mision': 'Nuestra misión es contribuir a un mundo más limpio y sostenible, promoviendo la correcta gestión de residuos y la conciencia ambiental en la comunidad.',
             'vision': 'Nuestra visión es ser líderes en innovación y educación ambiental, inspirando a las personas a adoptar hábitos responsables para el cuidado del planeta.',
             'historia': 'Basurini nació como una iniciativa estudiantil para resolver los problemas de acumulación de basura en la ciudad, evolucionando hasta convertirse en un referente de acción ecológica.'
@@ -68,12 +129,42 @@
             const btnMision = document.getElementById('btn-mision');
             const btnVision = document.getElementById('btn-vision');
             const btnHistoria = document.getElementById('btn-historia');
+            const btnSesion = document.querySelector('.nav-link[href="#artwork"]');
+
+            // Mostrar el texto de inicio por defecto
+            if (introText) introText.innerHTML = textos.inicio;
             if (btnInicio) btnInicio.addEventListener('click', function(e) { e.preventDefault(); introText.innerHTML = textos.inicio; });
             if (btnMision) btnMision.addEventListener('click', function(e) { e.preventDefault(); introText.innerHTML = textos.mision; });
             if (btnVision) btnVision.addEventListener('click', function(e) { e.preventDefault(); introText.innerHTML = textos.vision; });
             if (btnHistoria) btnHistoria.addEventListener('click', function(e) { e.preventDefault(); introText.innerHTML = textos.historia; });
-            // Mostrar el texto de inicio por defecto
-            introText.innerHTML = textos.inicio;
+
+            // Control de sesión: mostrar/ocultar botón de sesión
+            function actualizarSesion() {
+                const sesionIniciada = sessionStorage.getItem('sesion_iniciada') === '1';
+                if (btnSesion) {
+                    if (sesionIniciada) {
+                        btnSesion.textContent = 'Cerrar Sesión';
+                        btnSesion.onclick = function(e) {
+                            e.preventDefault();
+                            sessionStorage.removeItem('sesion_iniciada');
+                            window.location.href = '/bienvenida';
+                        };
+                        btnSesion.style.display = '';
+                    } else {
+                        btnSesion.textContent = 'Iniciar Sesión';
+                        btnSesion.onclick = null;
+                        // Ocultar el botón si ya está en la página de bienvenida
+                        if (window.location.pathname === '/' || window.location.pathname.includes('Bienvenida')) {
+                            btnSesion.style.display = 'none';
+                        } else {
+                            btnSesion.style.display = '';
+                        }
+                    }
+                }
+            }
+            actualizarSesion();
+            // Si se inicia sesión desde el login, guardar estado
+            window.addEventListener('storage', actualizarSesion);
         });
     </script>
 {% endblock %}

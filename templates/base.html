@@ -6,6 +6,12 @@
     <title>{% block title %}Basurini{% endblock %}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            height: 100vh;
+            overflow: hidden;
+        }
+
+
         body {
         font-family: Arial, sans-serif;
         color: white;
@@ -15,72 +21,86 @@
 
         /* Header */
         .header {
-        background-color: #000000;
-        padding: 15px 0;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        z-index: 1000;
+            background-color: #000000;
+            padding: 15px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
         }
 
         .header, .header * {
-        color: #fff !important;
+            color: #fff !important;
         }
 
         .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
         }
 
         .logo {
-        font-size: 2rem;
-        font-weight: bold;
-        font-style: italic;
-        font-family: 'Times New Roman', serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #ffffff;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
         }
 
         .nav-menu {
-        display: flex;
-        list-style: none;
-        align-items: center;
+            display: flex;
+            list-style: none;
+            gap: 0;
+            align-items: center;
         }
 
         .nav-link {
-        display: block;
-        padding: 15px 25px;
-        color: #ffffff;
-        text-decoration: none;
-        font-size: 1.1rem;
-        border-right: 1px solid #333;
+            display: block;
+            padding: 15px 25px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: normal;
+            border-right: 1px solid #333;
         }
 
         .nav-item:last-child .nav-link {
-        border-right: none;
+            border-right: none;
         }
 
         .nav-link:hover {
-        background-color: #333;
+            background-color: #333;
         }
 
         @media (max-width: 768px) {
-        .nav-menu {
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .nav-link {
-            padding: 10px 15px;
-            font-size: 1rem;
-        }
+            .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-link {
+                padding: 10px 15px;
+                font-size: 1rem;
+            }
         }
 
         /* Contenido principal */
         .main-content {
-        padding-top: 80px; /* espacio para header */
-        min-height: 100vh;
-        background-color: white;
-        color: black;
+            padding-top: 80px; /* espacio para header */
+            min-height: calc(100vh - 80px);
+            max-height: calc(100vh - 80px);
+            overflow: hidden;
+            background-color: white;
+            color: black;
         }
     </style>
     {% block head_styles %}{% endblock %}
@@ -88,20 +108,12 @@
     <body>
 
     <!-- Header fijo con su contenedor -->
-    <div class="header">
-        <div class="container">
-        <div class="logo">Basurini</div>
-        </div>
-    </div>
+    {% include 'header.html' %}
 
-    <!-- Contenido navegable con su propio contenedor -->
-    <div class="main-content">
-        <div class="container">
-        {% block content %}
-        <!-- Aquí se muestran las páginas y se ajustan al contenedor -->
-        {% endblock %}
-        </div>
-    </div>
+    <!-- Contenido navegable sin contenedor extra -->
+    {% block content %}
+    <!-- Aquí se muestran las páginas y se ajustan al contenedor -->
+    {% endblock %}
 
     {% block scripts %}{% endblock %}
 </body>

@@ -1,0 +1,391 @@
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .form-container {
+        width: 1200px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+    }
+
+
+    .photo-upload {
+        border: 2px dashed #ddd;
+        border-radius: 6px;
+        padding: 100px; /* Doble del tamaño original */
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background-color: #fafafa;
+        width: 900px; /* Más ancho */
+        height: 370px; /* Más alto */
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 28px;
+    }
+
+    .form-flex {
+        display: flex;
+        gap: 32px;
+    }
+
+    .form-left, .form-right {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .form-left .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-right {
+        align-items: center;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+        font-size: 16px;
+    }
+
+    .form-group label.recompensa-label {
+        display: block;
+        text-align: center;
+    }
+
+    .form-group input.recompensa-input {
+        text-align: center;
+    }
+
+    .form-group label:not(.recompensa-label) {
+        text-align: left;
+        display: block;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+        outline: none;
+        border-color: #4CAF50;
+    }
+
+    input.recompensa-input {
+        text-align: center;
+    }
+
+    textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 6px;
+        font-size: 16px;
+        resize: vertical;
+        min-height: 250px; /* Más alto */
+        transition: border-color 0.3s;
+    }
+
+    textarea:focus {
+        outline: none;
+        border-color: #4CAF50;
+    }
+
+    .location-btn {
+        background-color: #2196F3;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .location-btn:hover {
+        background-color: #1976D2;
+    }
+
+    .location-info {
+        margin-top: 10px;
+        padding: 10px;
+        background-color: #e3f2fd;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #1976D2;
+        display: none;
+    }
+
+  
+    .photo-upload:hover {
+        border-color: #4CAF50;
+        background-color: #f0f8f0;
+    }
+
+    .photo-upload input[type="file"] {
+        display: none;
+    }
+
+    .upload-text {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .upload-icon {
+        font-size: 48px;
+        color: #ccc;
+        margin-bottom: 10px;
+    }
+
+    .photo-preview {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+        min-height: 120px;
+        width: 800px;
+        height: 300px;
+        max-width: 100%;
+        justify-content: flex-start;
+        align-items: flex-start;
+        background: #fafafa;
+        border-radius: 6px;
+        border: 1px solid #eee;
+        padding: 10px;
+    }
+
+    .photo-item {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        border-radius: 6px;
+        overflow: hidden;
+        border: 2px solid #ddd;
+    }
+
+    .photo-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .remove-photo {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: #f44336;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .publish-btn {
+        width: 100%;
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px;
+        border: none;
+        border-radius: 6px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 20px;
+    }
+
+    .publish-btn:hover {
+        background-color: #45a049;
+    }
+
+    .publish-btn:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    @media (max-width: 900px) {
+        .form-flex {
+            flex-direction: column;
+        }
+
+        .form-right {
+            align-items: stretch;
+        }
+    }
+
+    .photo-upload-btn {
+        border: 2px dashed #ddd;
+        border-radius: 6px;
+        padding: 8px 18px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        background-color: #fafafa;
+        display: inline-block;
+        margin-bottom: 10px;
+        font-size: 15px;
+        color: #666;
+    }
+</style>
+<div class="form-container">
+    <h1 style="text-align:center;">Generar un punto de recolección</h1>
+    <form id="productForm">
+        <div class="form-flex">
+            <div class="form-left">
+                <div class="form-group">
+                    <label for="productName" class="recompensa-label">Recompensa S/</label>
+                    <input type="text" id="productName" name="productName" placeholder="Ingresa Recompensa" required class="recompensa-input">
+                </div>
+                <div class="form-group">
+                    <label for="ubicacion">Ubicación</label>
+                    <button type="button" class="location-btn" onclick="getLocation()">
+                        📍 Obtener Ubicación
+                    </button>
+                    <div id="locationInfo" class="location-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Descripción</label>
+                    <textarea id="description" name="description" placeholder="Describe tu producto aquí..."></textarea>
+                </div>
+            </div>
+            <div class="form-right">
+                <label>Fotos del Producto</label>
+                <button type="button" class="photo-upload-btn" onclick="document.getElementById('photoInput').click()">
+                    📷 Haz clic para subir fotos
+                </button>
+                <input type="file" id="photoInput" accept="image/*" multiple onchange="handleFileSelect(event)" style="display:none;">
+                <div id="photoPreview" class="photo-preview"></div>
+                <button type="submit" class="publish-btn">Publicar Producto</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    let selectedFiles = [];
+    let currentLocation = null;
+
+    function getLocation() {
+        const locationBtn = document.querySelector('.location-btn');
+        const locationInfo = document.getElementById('locationInfo');
+        
+        locationBtn.innerHTML = '⏳ Obteniendo ubicación...';
+        locationBtn.disabled = true;
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    currentLocation = { lat, lng };
+                    
+                    locationInfo.innerHTML = `📍 Ubicación obtenida: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                    locationInfo.style.display = 'block';
+                    
+                    locationBtn.innerHTML = '✅ Ubicación Obtenida';
+                    locationBtn.style.backgroundColor = '#4CAF50';
+                },
+                function(error) {
+                    locationInfo.innerHTML = '❌ No se pudo obtener la ubicación. Inténtalo de nuevo.';
+                    locationInfo.style.display = 'block';
+                    locationInfo.style.backgroundColor = '#ffebee';
+                    locationInfo.style.color = '#c62828';
+                    
+                    locationBtn.innerHTML = '📍 Obtener Ubicación';
+                    locationBtn.disabled = false;
+                }
+            );
+        } else {
+            locationInfo.innerHTML = '❌ Tu navegador no soporta geolocalización.';
+            locationInfo.style.display = 'block';
+            locationInfo.style.backgroundColor = '#ffebee';
+            locationInfo.style.color = '#c62828';
+            
+            locationBtn.innerHTML = '📍 Obtener Ubicación';
+            locationBtn.disabled = false;
+        }
+    }
+
+    function handleFileSelect(event) {
+        const files = Array.from(event.target.files);
+        selectedFiles = [...selectedFiles, ...files];
+        displayPhotos();
+    }
+
+    function displayPhotos() {
+        const preview = document.getElementById('photoPreview');
+        preview.innerHTML = '';
+
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `
+                    <img src="${e.target.result}" alt="Foto ${index + 1}">
+                    <button class="remove-photo" onclick="removePhoto(${index})">×</button>
+                `;
+                preview.appendChild(photoItem);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function removePhoto(index) {
+        selectedFiles.splice(index, 1);
+        displayPhotos();
+    }
+
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const productName = document.getElementById('productName').value;
+        const description = document.getElementById('description').value;
+        
+        if (!productName.trim()) {
+            alert('Por favor, ingresa el nombre del producto');
+            return;
+        }
+        
+        // Aquí puedes agregar la lógica para enviar los datos
+        console.log('Datos del producto:', {
+            name: productName,
+            description: description,
+            location: currentLocation,
+            photos: selectedFiles
+        });
+        
+        alert('¡Producto registrado exitosamente!');
+    });
+</script>

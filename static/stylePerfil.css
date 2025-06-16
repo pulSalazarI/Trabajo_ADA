@@ -1,0 +1,143 @@
+More actions
+/* Estilo para PERFIL */
+/* Estilo para la cabecera del perfil*/
+/* Reset básico para eliminar márgenes y paddings por defecto */
+/* Reset básico */
+/* --- Estilos del perfil --- */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+    color: #be4545;
+}
+
+.perfil-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: rgb(19, 78, 4);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+/* Cabecera añadida */
+.perfil-cabecera {
+    background-color: #0d2c02;
+    color: rgb(193, 229, 107);
+    text-align: center;
+    padding: 20px;
+    margin: -30px -30px 20px -30px;
+    border-radius: 10px 10px 0 0;
+}
+
+.perfil-cabecera h1 {
+    margin: 0;
+    font-size: 22px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Foto de perfil */
+.perfil-foto {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.perfil-foto img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid #2c3e50;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Nombre */
+.perfil-nombre {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Contenedor de datos */
+.perfil-datos {
+    margin-top: 20px;
+}
+
+.dato {
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    flex-direction: row; /* Asegura que todo esté en línea */
+}
+
+.etiqueta {
+    font-weight: bold;
+    width: auto; /* Elimina el ancho fijo */
+    color: #ffffff;
+    font-size: 16px;
+    display: inline; /* Fuerza inline para evitar saltos */
+    white-space: nowrap; /* Evita saltos de línea en etiquetas largas */
+}
+
+.valor {
+    flex: 1;
+    font-size: 16px;
+}
+
+/* Barra de honor */
+.barra-honor {
+    width: 100%;
+    background-color: #d6dbe9;
+    border-radius: 10px;
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.barra-progreso {
+    background: linear-gradient(90deg, #072057, #d35400);
+    border-radius: 10px;
+    height: 100%;
+    width: 70%;
+    transition: width 0.5s ease;
+}
+
+.porcentaje {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+}
+
+/* Estilos especiales */
+#calificacion {
+    color: #2225e6;
+    font-weight: bold;
+}
+
+#saldo::before {
+    content: " S/";
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .perfil-container {
+        padding: 20px;
+    }
+    .etiqueta {
+        width: 100px;
+        font-size: 14px;
+    }
+    .valor {
+        font-size: 14px;
+    }
+}

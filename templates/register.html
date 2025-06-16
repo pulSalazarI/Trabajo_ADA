@@ -12,29 +12,24 @@
             min-height: 100vh;
             color: white;
         }
-        .main-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            min-height: calc(100vh - 80px);
-        }
-        .left-section { flex: 1; max-width: 500px; }
-        .intro-title { font-size: 2.5rem; font-weight: bold; margin-bottom: 20px; color: #fff; }
-        .intro-text { font-size: 1rem; line-height: 1.6; color: #fff; margin-bottom: 40px; }
-        .right-section { flex: 0 0 300px; margin-left: 40px; }
-        @media (max-width: 768px) {
-            .main-content { flex-direction: column; text-align: center; padding: 40px 20px; }
-            .right-section { flex: none; margin-left: 0; margin-top: 40px; width: 100%; max-width: 400px; }
-            .intro-title { font-size: 2rem; }
-        }
     </style>
 {% endblock %}
 {% block content %}
-    <div class="register-wrapper">
+    <div class="no-scroll-page" style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 80px); height: calc(100vh - 80px); width: 100vw; overflow: hidden;">
         {% include 'register_conponet.html' %}
     </div>
 {% endblock %}
-{% block scripts %}{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const btnSesion = document.querySelector('.nav-link[href="#artwork"]');
+        if (btnSesion) {
+            btnSesion.textContent = 'Salir';
+            btnSesion.onclick = function(e) {
+                e.preventDefault();
+                window.history.back();
+            };
+        }
+    });
+</script>
+{% endblock %}
