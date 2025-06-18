@@ -33,6 +33,9 @@ def mapa_basura():
 @app.route('/detalle_basura')
 def detalle_basura():
     return render_template('detalle_basura.html')
+@app.route('/register')
+def register():
+    return render_template('register.html')
 
 @app.route('/base')
 def base():

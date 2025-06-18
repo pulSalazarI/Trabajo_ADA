@@ -131,6 +131,9 @@
         const messageArea = document.getElementById('message-area');
         messageArea.textContent = '';
 
+        // Log para saber que se intentó login y con qué datos
+        console.log('[LOGIN] Intento de login:', { username, email, password });
+
         if (!username || !email || !password) {
             messageArea.textContent = 'Completa todos los campos.';
             messageArea.style.color = 'red';
@@ -142,19 +145,22 @@
             if (!res.ok) throw new Error('Error al conectar con el servidor');
             const usuarios = await res.json();
             const usuario = usuarios.find(u =>
-                (u.user_name === username || u.correo === email) && u.contrasena === password
+                (u.user_name === username && u.correo === email) && u.contrasena === password
             );
             if (usuario) {
                 sessionStorage.setItem('sesion_iniciada', '1');
                 sessionStorage.setItem('usuario', usuario.user_name);
+                console.log('[LOGIN] Login exitoso:', usuario);
                 window.location.href = '/mapa_basura';
             } else {
                 messageArea.textContent = 'Usuario, correo o contraseña incorrectos.';
                 messageArea.style.color = 'red';
+                console.log('[LOGIN] Fallo de login: datos incorrectos');
             }
         } catch (err) {
             messageArea.textContent = 'Error de autenticación.';
             messageArea.style.color = 'red';
+            console.error('[LOGIN] Error de autenticación:', err);
         }
     });
 </script>

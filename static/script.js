@@ -187,6 +187,14 @@ function cerrarDetalleBasura() {
     if (detalle && detalle.parentNode) {
         detalle.parentNode.innerHTML = '';
     }
+    // Restaurar solo el texto amarillo sin contenedor
+    const mensaje = document.getElementById('mensaje-inicial-detalle');
+    if (!mensaje) {
+        const cont = document.getElementById('detalleBasuraContent');
+        if (cont) {
+            cont.innerHTML = `<span id=\"mensaje-inicial-detalle\" style=\"color: #ffe066; font-size: 1.15rem; text-align: center;\">Seleccione un punto de basura para Recolectar y cobrar la recompensa</span>`;
+        }
+    }
 }
 
 // Cargar los puntos cuando se carga el script
