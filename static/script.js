@@ -187,12 +187,19 @@ function cerrarDetalleBasura() {
     if (detalle && detalle.parentNode) {
         detalle.parentNode.innerHTML = '';
     }
-    // Restaurar solo el texto amarillo sin contenedor
+    // Restaurar el mensaje con el mismo estilo negro y amarillo
     const mensaje = document.getElementById('mensaje-inicial-detalle');
     if (!mensaje) {
         const cont = document.getElementById('detalleBasuraContent');
         if (cont) {
-            cont.innerHTML = `<span id=\"mensaje-inicial-detalle\" style=\"color: #ffe066; font-size: 1.15rem; text-align: center;\">Seleccione un punto de basura para Recolectar y cobrar la recompensa</span>`;
+            cont.innerHTML = `<div id=\"mensaje-inicial-detalle\" style=\"background: #000; color: #ffe066; font-size: 1.18rem; text-align: left; border-radius: 18px; padding: 32px 28px 28px 32px; max-width: 95%; box-shadow: 0 2px 12px rgba(0,0,0,0.18); font-family: 'Segoe UI', 'Arial', sans-serif; font-weight: 500; line-height: 1.7; border: 1.5px solid #ffe066; margin: 18px 0; letter-spacing: 0.01em;\">
+                <span style=\"display: block; font-size: 1.35rem; font-weight: bold; color: #ffe066; margin-bottom: 18px; text-align: center; letter-spacing: 0.02em;\">¡Transforma tu tiempo en impacto!</span>
+                <ol style=\"margin: 0 0 18px 18px; padding: 0; color: #ffe066;\">
+                    <li>Selecciona un punto de basura en el mapa, sigue la ruta y recógela.</li>
+                    <li>Por cada acción, ganas dinero y contribuyes a un mundo más limpio, seguro y saludable.</li>
+                </ol>
+                <span style=\"display: block; font-size: 1.08rem; color: #ffe066; text-align: center; margin-top: 10px; font-weight: 600;\">¡Tú ayudas al planeta y el planeta te lo agradece!</span>
+            </div>`;
         }
     }
 }

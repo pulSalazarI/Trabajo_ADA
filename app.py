@@ -30,6 +30,10 @@ def publicar_componente():
 def mapa_basura():
     return render_template('mapa_basura.html')
 
+@app.route('/bienvenida')
+def bienvenida():
+    return render_template('Bienvenida.html')
+
 @app.route('/detalle_basura')
 def detalle_basura():
     return render_template('detalle_basura.html')
@@ -40,6 +44,39 @@ def register():
 @app.route('/base')
 def base():
     return render_template('base.html')
+
+
+
+@app.route('/registrar-usuario', methods=['POST'])
+def registrar_usuario():
+    datos = request.get_json()
+    
+    # Validar campos requeridos
+    campos_requeridos = ['nombres', 'user_name', 'correo', 'contrasena']
+    if not all(campo in datos and datos[campo] for campo in campos_requeridos):
+        return jsonify({'error': 'Faltan datos obligatorios'}), 400
+
+    payload = {
+        "nombres": datos['nombres'],
+        "user_name": datos['user_name'],
+        "correo": datos['correo'],
+        "contrasena": datos['contrasena']
+    }
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    response = requests.post(f"{SUPABASE_URL}/rest/v1/usuarios", headers=headers, json=payload)
+
+    if response.status_code in [200, 201]:
+        
+        return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
+    
+    else:
+        return jsonify({"error": "No se pudo registrar", "detalles": response.json()}), 500
 
 @app.route('/perfil-usuario', methods=['GET'])
 def obtener_perfil_usuario():
@@ -232,8 +269,6 @@ def obtener_ruta():
         return jsonify({"coordenadas": coords})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
-
-
 
 
 if __name__ == '__main__':

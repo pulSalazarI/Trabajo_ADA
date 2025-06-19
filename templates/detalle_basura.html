@@ -96,6 +96,21 @@
     .detalle-basura-container .cerrar-detalle-btn:hover {
         color: #d32f2f;
     }
+    .detalle-basura-container .cobrar-detalle-btn {
+        display: block;
+        margin: 0 auto 16px auto;
+        padding: 10px 20px;
+        font-size: 1.1rem;
+        color: #fff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .detalle-basura-container .cobrar-detalle-btn:hover {
+        background-color: #45a049;
+    }
 </style>
 <div class="detalle-basura-container">
     <header class="detalle-basura-cabecera">
@@ -107,12 +122,13 @@
         <!-- Aquí podría ir una foto principal si se desea -->
     </div>
     <h2 class="detalle-basura-nombre">Publicado por: <span id="detalle-publicado-por"></span></h2>
-    <div class="detalle-basura-datos">
-        <div class="dato">
+    <div class="detalle-basura-datos" style="margin-bottom: 10px;">
+        <div class="dato" style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
             <span class="etiqueta">Recompensa:</span>
             <span class="valor" id="detalle-recompensa"></span>
+            <button class="cobrar-detalle-btn" title="Cobrar" onclick="cobrarRecompensa()">Cobrar</button>
         </div>
-        <div class="dato">
+        <div class="dato" style="margin-bottom: 0;">
             <span class="etiqueta">Descripción:</span>
             <span class="valor" id="detalle-descripcion"></span>
         </div>

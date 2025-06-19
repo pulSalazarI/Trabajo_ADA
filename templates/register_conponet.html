@@ -380,18 +380,49 @@ function mostrarModalConfirmacion() {
     window.location.href = '/bienvenida';
   };
 }
+
 // Reemplazar el fetch por mostrarModalConfirmacion
 const form = document.getElementById('registroForm');
 if(form) {
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    const password = passwordInput.value;
-    const confirmPassword = confirmPasswordInput.value;
-    if (password !== confirmPassword) {
-      alert('Las contraseñas no coinciden');
-      return;
-    }
-    mostrarModalConfirmacion();
-  });
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const nombre = document.getElementById('nombre').value.trim();
+        const apellido = document.getElementById('apellido').value.trim();
+        const user_name = document.getElementById('usuario').value.trim();
+        const correo = document.getElementById('correo').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        if (password !== confirmPassword) {
+        alert('Las contraseñas no coinciden');
+        return;
+        }
+        // Unir nombre y apellido
+        const nombres = `${nombre} ${apellido}`.trim();
+        // Construir el JSON
+        const payload = {
+        nombres,
+        user_name,
+        correo,
+        contrasena: password
+
+        };
+
+        console.log('[DEBUG] Enviando datos al backend:', payload);
+        try {
+        const res = await fetch('/registrar-usuario', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+            mostrarModalConfirmacion();
+        } else {
+            const data = await res.json();
+            alert(data.error || 'Error al registrar usuario');
+        }
+        } catch (err) {
+        alert('Error de red o del servidor');
+        }
+    });
 }
 </script>

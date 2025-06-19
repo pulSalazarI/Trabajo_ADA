@@ -95,6 +95,16 @@
 <div class="success-card">
     <div class="icon"></div>
     <h1>REGISTRADO CORRECTAMENTE</h1>
-    <p>Redirígiese a su correo para completar su registro</p>
+    <p>Redirígiese para validar su registro</p>
     <button class="btn-aceptar" id="btn-aceptar-modal">Aceptar</button>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btnAceptar = document.getElementById('btn-aceptar-modal');
+    if (btnAceptar) {
+        btnAceptar.addEventListener('click', function() {
+            window.location.href = '/'; // Redirige al panel de bienvenida
+        });
+    }
+});
+</script>
