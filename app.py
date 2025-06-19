@@ -47,6 +47,8 @@ def base():
 
 
 
+
+
 @app.route('/registrar-usuario', methods=['POST'])
 def registrar_usuario():
     datos = request.get_json()

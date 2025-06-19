@@ -24,7 +24,7 @@ const markers = {};
 
 // Función para cargar los puntos desde el backend y mostrarlos en el mapa
 function cargarPuntos() {
-    fetch('http://127.0.0.1:5000/puntos')
+    fetch('/puntos')
         .then(res => {
             if (!res.ok) {
                 console.error('Error en la respuesta de /puntos:', res.status, res.statusText);
@@ -65,7 +65,7 @@ function cargarPuntos() {
 // Función para marcar un punto como visitado (llama al backend)
 // Función para marcar un punto como visitado (llama al backend)
 function marcarVisitado(id) {
-    fetch(`http://127.0.0.1:5000/marcar-visitado/${id}`, {
+    fetch(`/marcar-visitado/${id}`, {
         method: 'POST'
     })
     .then(res => res.json())
