@@ -375,15 +375,22 @@
                     method: 'POST',
                     body: formData
                 });
-                if (resp.ok) {
-                    const data = await resp.json();
-                    if (data.url) {
-                        photoUrls.push(data.url);
-                    } else {
-                        alert('Error al subir una foto: ' + (data.error || 'Desconocido'));
+                let data = null;
+                try {
+                    data = await resp.json();
+                } catch (jsonErr) {
+                    // Si no es JSON, intenta como texto plano
+                    const text = await resp.text();
+                    try {
+                        data = JSON.parse(text);
+                    } catch (e) {
+                        data = { url: text };
                     }
+                }
+                if (resp.ok && data.url) {
+                    photoUrls.push(data.url);
                 } else {
-                    alert('Error al subir una foto: respuesta no OK');
+                    alert('Error al subir una foto: ' + (data.error || 'Desconocido'));
                 }
             } catch (err) {
                 alert('Error de red al subir una foto.');
