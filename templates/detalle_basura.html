@@ -189,6 +189,10 @@ function cerrarDetalleBasura() {
 // Solo se debe llenar y abrir el componente desde cargarDetalleDirecto
 
 window.cobrarRecompensa = async function() {
+    // Mostrar loader inmediatamente, ANTES de cualquier await o lógica
+    if (window.mostrarConfirmacion) {
+        window.mostrarConfirmacion('Procesando...', true);
+    }
     try {
         // user_name: el que se muestra en el detalle
         const user_name = document.getElementById('detalle-publicado-por').textContent || '';
@@ -205,19 +209,39 @@ window.cobrarRecompensa = async function() {
             id_p_basura: parseInt(id_p_basura)
         };
 
-        console.log('[COBRAR] Enviando al backend:', payload);
+        // Forzar reflujo para asegurar que el DOM se actualice antes del fetch
+        if (window.mostrarConfirmacion) void document.body.offsetHeight;
+
         const res = await fetch('/recolectar-punto', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         });
 
-        if (!res.ok) throw new Error('No se pudo cobrar la recompensa');
         const data = await res.json();
-        console.log('[COBRAR] Respuesta del backend:', data);
-        alert('¡Recompensa cobrada exitosamente!');
+        if (window.mostrarConfirmacion) {
+            if (data.mensaje) {
+                window.mostrarConfirmacion(data.mensaje, false);
+            } else if (data.error) {
+                window.mostrarConfirmacion(data.error, false);
+            } else {
+                window.mostrarConfirmacion('Respuesta inesperada del servidor.', false);
+            }
+        } else {
+            if (data.mensaje) {
+                alert(data.mensaje);
+            } else if (data.error) {
+                alert(data.error);
+            } else {
+                alert('Respuesta inesperada del servidor.');
+            }
+        }
     } catch (err) {
-        alert('Error al cobrar la recompensa');
+        if (window.mostrarConfirmacion) {
+            window.mostrarConfirmacion('Ocurrió un error al cobrar la recompensa.', false);
+        } else {
+            alert('Ocurrió un error al cobrar la recompensa.');
+        }
         console.error(err);
     }
 }

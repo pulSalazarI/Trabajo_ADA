@@ -46,7 +46,103 @@ def base():
     return render_template('base.html')
 
 
+###########################################################################
 
+@app.route('/recolectar-punto', methods=['POST'])
+def recolectar_punto():
+    datos = request.get_json()
+
+    user_name = datos.get("user_name")
+    user_name_recolector = datos.get("user_name_recolector")
+    recompensa = float(datos.get("recompensa", 0))
+    id_p_basura = datos.get("id_p_basura")
+
+    if not all([user_name, user_name_recolector, id_p_basura]):
+        return jsonify({"error": "Faltan datos requeridos"}), 400
+
+    headers = {
+        "apikey": SUPABASE_KEY,
+        "Authorization": f"Bearer {SUPABASE_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    # 🔎 Obtener ID y saldo del usuario
+    url_user = f"{SUPABASE_URL}/rest/v1/usuarios?user_name=eq.{user_name}&select=id_usuario,saldo"
+    response_user = requests.get(url_user, headers=headers)
+    if response_user.status_code != 200 or not response_user.json():
+        return jsonify({"error": "No se encontró al usuario"}), 404
+    usuario_data = response_user.json()[0]
+    id_usuario = usuario_data['id_usuario']
+    saldo_usuario = float(usuario_data['saldo'])
+
+    # 🔎 Obtener ID y saldo del recolector
+    url_recolector = f"{SUPABASE_URL}/rest/v1/usuarios?user_name=eq.{user_name_recolector}&select=id_usuario,saldo"
+    response_recolector = requests.get(url_recolector, headers=headers)
+    if response_recolector.status_code != 200 or not response_recolector.json():
+        return jsonify({"error": "No se encontró al recolector"}), 404
+    recolector_data = response_recolector.json()[0]
+    id_recolector = recolector_data['id_usuario']
+    saldo_recolector = float(recolector_data['saldo'])
+
+    # 🧾 Solo actualiza estado si no hay recompensa
+    if recompensa == 0:
+        patch_resp = requests.patch(
+            f"{SUPABASE_URL}/rest/v1/p_basura?id_p_basura=eq.{id_p_basura}",
+            headers=headers,
+            json={"id_recolector": id_recolector, "estado_activo": 0}
+        )
+        if patch_resp.status_code in [200, 204]:
+            return jsonify({"mensaje": "Recojo registrado sin recompensa"}), 200
+        else:
+            return jsonify({"error": "Error al actualizar el estado"}), 500
+
+    # 💰 Verificar si el usuario tiene saldo suficiente
+    if saldo_usuario < recompensa:
+        return jsonify({"error": "Saldo insuficiente para cubrir la recompensa"}), 400
+
+    # 💵 Calcular comisión y ganancia
+    comision = round(recompensa * 0.10, 2)
+    ganancia_recolector = round(recompensa * 0.90, 2)
+    nuevo_saldo_usuario = round(saldo_usuario - recompensa, 2)
+    nuevo_saldo_recolector = round(saldo_recolector + ganancia_recolector, 2)
+
+    # 💳 Actualizar saldo del publicador
+    r1 = requests.patch(
+        f"{SUPABASE_URL}/rest/v1/usuarios?id_usuario=eq.{id_usuario}",
+        headers=headers,
+        json={"saldo": nuevo_saldo_usuario}
+    )
+    if r1.status_code not in [200, 204]:
+        return jsonify({"error": "Error al actualizar el saldo del usuario"}), 500
+
+    # 💳 Actualizar saldo del recolector
+    r2 = requests.patch(
+        f"{SUPABASE_URL}/rest/v1/usuarios?id_usuario=eq.{id_recolector}",
+        headers=headers,
+        json={"saldo": nuevo_saldo_recolector}
+    )
+    if r2.status_code not in [200, 204]:
+        return jsonify({"error": "Error al actualizar el saldo del recolector"}), 500
+
+    # 📍 Actualizar estado del punto y asignar recolector
+    r3 = requests.patch(
+        f"{SUPABASE_URL}/rest/v1/p_basura?id_p_basura=eq.{id_p_basura}",
+        headers=headers,
+        json={"id_recolector": id_recolector, "estado_activo": 0}
+    )
+    if r3.status_code not in [200, 204]:
+        return jsonify({"error": "Error al actualizar el punto de basura"}), 500
+
+    # 🧾 Registrar la comisión
+    r4 = requests.post(
+        f"{SUPABASE_URL}/rest/v1/comision",
+        headers=headers,
+        json={"id_p_basura": id_p_basura, "comision": comision}
+    )
+    if r4.status_code not in [200, 201]:
+        return jsonify({"error": "Error al registrar la comisión"}), 500
+
+    return jsonify({"mensaje": "Recompensa transferida exitosamente"}), 200
 
 
 @app.route('/registrar-usuario', methods=['POST'])

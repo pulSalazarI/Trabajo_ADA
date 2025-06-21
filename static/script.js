@@ -233,12 +233,50 @@ window.cobrarRecompensa = async function() {
 
         const data = await res.json();
         console.log('[COBRAR] Respuesta del backend:', data);
-        mostrarConfirmacion(data.mensaje || 'Operación realizada correctamente');
+        // Mostrar mensaje del backend (éxito o error) en el componente visual
+        if (data.mensaje) {
+            window.mostrarConfirmacion(data.mensaje);
+        } else if (data.error) {
+            window.mostrarConfirmacion(data.error);
+        } else {
+            window.mostrarConfirmacion('Respuesta inesperada del servidor.');
+        }
     } catch (err) {
-        mostrarConfirmacion('Ocurrió un error al cobrar la recompensa.');
+        window.mostrarConfirmacion('Ocurrió un error al cobrar la recompensa.');
         console.error(err);
     }
 }
+
+// Componente visual reutilizable para mostrar confirmaciones y errores
+window.mostrarConfirmacion = function(mensaje) {
+    // Si ya existe el contenedor, lo reutilizamos
+    let cont = document.getElementById('componente-confirmacion');
+    if (!cont) {
+        cont = document.createElement('div');
+        cont.id = 'componente-confirmacion';
+        cont.style.position = 'fixed';
+        cont.style.top = '0';
+        cont.style.left = '0';
+        cont.style.width = '100vw';
+        cont.style.height = '100vh';
+        cont.style.background = 'rgba(0,0,0,0.35)';
+        cont.style.display = 'flex';
+        cont.style.alignItems = 'center';
+        cont.style.justifyContent = 'center';
+        cont.style.zIndex = '9999';
+        document.body.appendChild(cont);
+    }
+    cont.innerHTML = `
+        <div style="background: #fffbe6; border-radius: 18px; box-shadow: 0 2px 16px rgba(0,0,0,0.18); padding: 38px 32px 32px 32px; max-width: 90vw; min-width: 320px; text-align: center; font-family: 'Segoe UI', Arial, sans-serif; border: 2px solid #ffe066;">
+            <div style="font-size: 1.25rem; color: #222; margin-bottom: 18px; font-weight: 600;">${mensaje}</div>
+            <button id="btn-confirmacion-ok" style="background: #ffe066; color: #222; border: none; border-radius: 8px; padding: 10px 32px; font-size: 1.1rem; font-weight: 600; cursor: pointer; margin-top: 10px;">OK</button>
+        </div>
+    `;
+    document.getElementById('btn-confirmacion-ok').onclick = function() {
+        cont.remove();
+        location.reload();
+    };
+};
 
 // Cargar los puntos cuando se carga el script
 cargarPuntos();

@@ -6,22 +6,102 @@
 </div>
 <script>
 // Lógica para mostrar el mensaje dinámicamente y recargar la página
-function mostrarConfirmacion(mensaje) {
+function mostrarConfirmacion(mensaje, cargando = false) {
     let popup = document.getElementById('confirmacion-popup');
     if (!popup) {
-        fetch('/cpt_respuestas')
-            .then(res => res.text())
-            .then(html => {
-                document.body.insertAdjacentHTML('beforeend', html);
-                document.getElementById('confirmacion-mensaje').textContent = mensaje;
-                document.getElementById('btn-confirmar-ok').onclick = function() {
-                    document.getElementById('confirmacion-popup').remove();
-                    window.location.reload();
-                };
-            });
+        // Insertar el HTML del popup directamente, con animación de carga si corresponde
+        const html = `
+        <div id="confirmacion-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #295003; padding: 32px 38px; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); font-size: 1.25rem; font-weight: bold; z-index: 9999; text-align: center; min-width: 320px;">
+            <span id="confirmacion-icono" style="font-size:2.2rem;display:block;margin-bottom:12px;">${cargando ? '<span class=\"loader\"></span>' : '✔️'}</span>
+            <span id="confirmacion-mensaje">${mensaje}</span>
+            <br><br>
+            <button id="btn-confirmar-ok" style="margin-top:12px;padding:8px 24px;font-size:1.1rem;background:#4caf50;color:#fff;border:none;border-radius:8px;cursor:pointer;display:${cargando ? 'none' : 'inline-block'};">OK</button>
+            <style>
+            .loader {
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #4caf50;
+                border-radius: 50%;
+                width: 36px;
+                height: 36px;
+                animation: spin 1s linear infinite;
+                display: inline-block;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            </style>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', html);
+        document.getElementById('btn-confirmar-ok').onclick = function() {
+            document.getElementById('confirmacion-popup').remove();
+        };
     } else {
         document.getElementById('confirmacion-mensaje').textContent = mensaje;
+        if (cargando) {
+            document.getElementById('confirmacion-icono').innerHTML = '<span class="loader"></span>';
+            document.getElementById('btn-confirmar-ok').style.display = 'none';
+        } else {
+            document.getElementById('confirmacion-icono').textContent = '✔️';
+            document.getElementById('btn-confirmar-ok').style.display = 'inline-block';
+        }
         popup.style.display = 'block';
+    }
+}
+
+window.cobrarRecompensa = async function() {
+    try {
+        // user_name: el que se muestra en el detalle
+        const user_name = document.getElementById('detalle-publicado-por').textContent || '';
+        // user_name_recolector: el que ha iniciado sesión
+        const user_name_recolector = sessionStorage.getItem('user_name') || '';
+        const recompensa = parseFloat(document.getElementById('detalle-recompensa').textContent) || 0;
+        // id_p_basura: el id guardado del popup seleccionado
+        const id_p_basura = sessionStorage.getItem('id_p_basura_seleccionado') || '';
+
+        const payload = {
+            user_name: user_name,
+            user_name_recolector: user_name_recolector,
+            recompensa: recompensa,
+            id_p_basura: parseInt(id_p_basura)
+        };
+
+        // Mostrar loader inmediatamente
+        if (window.mostrarConfirmacion) {
+            window.mostrarConfirmacion('Procesando...', true);
+        }
+
+        const res = await fetch('/recolectar-punto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        if (window.mostrarConfirmacion) {
+            if (data.mensaje) {
+                window.mostrarConfirmacion(data.mensaje, false);
+            } else if (data.error) {
+                window.mostrarConfirmacion(data.error, false);
+            } else {
+                window.mostrarConfirmacion('Respuesta inesperada del servidor.', false);
+            }
+        } else {
+            if (data.mensaje) {
+                alert(data.mensaje);
+            } else if (data.error) {
+                alert(data.error);
+            } else {
+                alert('Respuesta inesperada del servidor.');
+            }
+        }
+    } catch (err) {
+        if (window.mostrarConfirmacion) {
+            window.mostrarConfirmacion('Ocurrió un error al cobrar la recompensa.', false);
+        } else {
+            alert('Ocurrió un error al cobrar la recompensa.');
+        }
+        console.error(err);
     }
 }
 </script>
