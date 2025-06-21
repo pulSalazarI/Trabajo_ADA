@@ -302,39 +302,26 @@
         locationBtn.innerHTML = '⏳ Obteniendo ubicación...';
         locationBtn.disabled = true;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    
-                    currentLocation = { lat, lng };
-                    
-                    locationInfo.innerHTML = `📍 Ubicación obtenida: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
-                    locationInfo.style.display = 'block';
-                    
-                    locationBtn.innerHTML = '✅ Ubicación Obtenida';
-                    locationBtn.style.backgroundColor = '#4CAF50';
-                },
-                function(error) {
-                    locationInfo.innerHTML = '❌ No se pudo obtener la ubicación. Inténtalo de nuevo.';
-                    locationInfo.style.display = 'block';
-                    locationInfo.style.backgroundColor = '#ffebee';
-                    locationInfo.style.color = '#c62828';
-                    
-                    locationBtn.innerHTML = '📍 Obtener Ubicación';
-                    locationBtn.disabled = false;
-                }
-            );
-        } else {
-            locationInfo.innerHTML = '❌ Tu navegador no soporta geolocalización.';
-            locationInfo.style.display = 'block';
-            locationInfo.style.backgroundColor = '#ffebee';
-            locationInfo.style.color = '#c62828';
-            
-            locationBtn.innerHTML = '📍 Obtener Ubicación';
-            locationBtn.disabled = false;
-        }
+        // Usar simulación desde el backend (obtener_ubicacion)
+        fetch('/simular-ubicacion')
+            .then(res => res.json())
+            .then(data => {
+                const lat = parseFloat(data.lat);
+                const lng = parseFloat(data.lon);
+                currentLocation = { lat, lng };
+                locationInfo.innerHTML = `📍 Ubicación simulada: ${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+                locationInfo.style.display = 'block';
+                locationBtn.innerHTML = '✅ Ubicación Obtenida';
+                locationBtn.style.backgroundColor = '#4CAF50';
+            })
+            .catch(() => {
+                locationInfo.innerHTML = '❌ No se pudo obtener la ubicación simulada.';
+                locationInfo.style.display = 'block';
+                locationInfo.style.backgroundColor = '#ffebee';
+                locationInfo.style.color = '#c62828';
+                locationBtn.innerHTML = '📍 Obtener Ubicación';
+                locationBtn.disabled = false;
+            });
     }
 
     function handleFileSelect(event) {
@@ -367,25 +354,62 @@
         displayPhotos();
     }
 
-    document.getElementById('productForm').addEventListener('submit', function(e) {
+    document.getElementById('productForm').addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const productName = document.getElementById('productName').value;
         const description = document.getElementById('description').value;
         
         if (!productName.trim()) {
-            alert('Por favor, ingresa el nombre del producto');
+            alert('Por favor, ingresa la recompensa de el producto');
             return;
         }
-        
-        // Aquí puedes agregar la lógica para enviar los datos
-        console.log('Datos del producto:', {
-            name: productName,
-            description: description,
-            location: currentLocation,
-            photos: selectedFiles
-        });
-        
-        alert('¡Producto registrado exitosamente!');
+
+        // Subir fotos a /subir y guardar las URLs
+        const photoUrls = [];
+        for (const file of selectedFiles) {
+            const formData = new FormData();
+            formData.append('imagen', file);
+            try {
+                const resp = await fetch('/subir', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await resp.json();
+                if (data.url) {
+                    photoUrls.push(data.url);
+                } else {
+                    alert('Error al subir una foto: ' + (data.error || 'Desconocido'));
+                }
+            } catch (err) {
+                alert('Error de red al subir una foto.');
+            }
+        }
+
+        // Aquí puedes agregar la lógica para enviar los datos junto con las URLs de las fotos
+        const userName = sessionStorage.getItem('user_name');
+        const payload = {
+            user_name: userName || '',
+            latitud: currentLocation ? currentLocation.lat : null,
+            longitud: currentLocation ? currentLocation.lng : null,
+            recompensa: parseFloat(productName),
+            descripcion: description,
+            imagenes: photoUrls
+        };
+        try {
+            const resp = await fetch('/publicar-punto', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await resp.json();
+            if (resp.ok) {
+                alert('¡Producto registrado exitosamente!');
+            } else {
+                alert('Error al registrar el producto: ' + (data.error || 'Desconocido'));
+            }
+        } catch (err) {
+            alert('Error de red al registrar el producto.');
+        }
     });
 </script>

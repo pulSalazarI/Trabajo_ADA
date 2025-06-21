@@ -6,9 +6,18 @@ import osmnx as ox
 import requests
 from dotenv import load_dotenv
 import os
+import csv
+import random
+
+
+from werkzeug.utils import secure_filename  # ✅ ESTA ES LA CLAVE
 
 app = Flask(__name__)
 CORS(app)
+
+app.config['UPLOAD_FOLDER'] = 'static/b_imagenes'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 
 load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
@@ -44,8 +53,83 @@ def register():
 @app.route('/base')
 def base():
     return render_template('base.html')
+########################################################################
+
+@app.route('/publicar-punto', methods=['POST'])
+def publicar_punto():
+    try:
+        datos = request.get_json()
+
+        user_name = datos.get("user_name")
+        lat = datos.get("latitud")
+        lon = datos.get("longitud")
+        recompensa = datos.get("recompensa", 0.0)
+        descripcion = datos.get("descripcion", "")
+        imagenes = datos.get("imagenes", [])
+
+        # Validar entrada mínima
+        if not all([user_name, lat, lon]):
+            
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
+        # Obtener id_usuario desde user_name
+        url_usuario = f"{SUPABASE_URL}/rest/v1/usuarios?select=id_usuario&user_name=eq.{user_name}"
+        headers = {
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+            "Content-Type": "application/json"
+        }
+        response_usuario = requests.get(url_usuario, headers=headers)
+        if response_usuario.status_code != 200 or not response_usuario.json():
+            return jsonify({"error": "Usuario no encontrado"}), 404
+        id_usuario = response_usuario.json()[0]["id_usuario"]
+
+        # Insertar el punto de basura
+        punto_data = {
+            "id_usuario": id_usuario,
+            "latitud": lat,
+            "longitud": lon,
+            "recompensa": recompensa,
+            "descripcion": descripcion
+        }
+        url_basura = f"{SUPABASE_URL}/rest/v1/p_basura"
+        response_punto = requests.post(url_basura, headers=headers, json=punto_data)
+        if response_punto.status_code != 201:
+            return jsonify({"error": "No se pudo crear el punto"}), 500
+        id_p_basura = response_punto.json()[0]["id_p_basura"]
+
+        # Insertar las imágenes
+        for url in imagenes:
+            imagen_data = {
+                "id_p_basura": id_p_basura,
+                "url": url
+            }
+            requests.post(f"{SUPABASE_URL}/rest/v1/imagen", headers=headers, json=imagen_data)
+
+        return jsonify({"mensaje": "Punto de basura creado exitosamente", "id_p_basura": id_p_basura})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
+#################################################################################
+@app.route('/subir', methods=['POST'])
+def subir_imagen():
+    if 'imagen' not in request.files:
+        return '', 400
+
+    archivo = request.files['imagen']
+    if archivo.filename == '':
+        return '', 400
+
+    filename = secure_filename(archivo.filename)
+    ruta = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    archivo.save(ruta)
+
+    IP_PUBLICA = 'http://3.16.130.202'  # Cambia por tu IP real o dominio
+    url = f"{IP_PUBLICA}/static/b_imagenes/{filename}"
+
+    return url  # Solo se devuelve la URL como texto plano
 ###########################################################################
 
 @app.route('/recolectar-punto', methods=['POST'])
@@ -335,6 +419,22 @@ def encontrar_nodo_mas_cercano(coord, coordenadas):
     )[0]
 
 
+def obtener_ubicacion():
+    ruta_csv = r'grafo/lista_adyacencia_completa.csv'
+
+    with open(ruta_csv, newline='', encoding='utf-8') as archivo:
+        lector = csv.reader(archivo)
+        next(lector)  # Saltar la cabecera
+
+        filas = list(lector)
+        fila_aleatoria = random.choice(filas)
+
+        latitud = fila_aleatoria[1]
+        longitud = fila_aleatoria[2]
+
+        return latitud, longitud
+
+
 # --- Ruta de cálculo de ruta entre dos nodos ---
 # Construcción del grafo desde CSV
 grafo, coordenadas = construir_grafo_villa_el_salvador("grafo/lista_adyacencia_completa.csv")
@@ -367,6 +467,12 @@ def obtener_ruta():
         return jsonify({"coordenadas": coords})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
+
+
+@app.route('/simular-ubicacion', methods=['GET'])
+def simular_ubicacion():
+    lat, lon = obtener_ubicacion()
+    return jsonify({'lat': lat, 'lon': lon})
 
 
 if __name__ == '__main__':
