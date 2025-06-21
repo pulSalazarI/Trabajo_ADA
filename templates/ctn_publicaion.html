@@ -367,36 +367,44 @@
 
         // Subir fotos a /subir y guardar las URLs (paralelo y robusto)
         const photoUrls = [];
+
         for (const file of selectedFiles) {
             const formData = new FormData();
             formData.append('imagen', file);
+
             try {
                 const resp = await fetch('/subir', {
                     method: 'POST',
                     body: formData
                 });
-                let data = null;
+
+                // Forzar respuesta como texto primero
+                const rawText = await resp.text();
+                let data;
+
                 try {
-                    data = await resp.json();
-                } catch (jsonErr) {
-                    // Si no es JSON, intenta como texto plano
-                    const text = await resp.text();
-                    try {
-                        data = JSON.parse(text);
-                    } catch (e) {
-                        data = { url: text };
-                    }
+                    data = JSON.parse(rawText);  // Intenta parsear como JSON
+                } catch (err) {
+                    // Si no es JSON, consideramos el texto como URL directa
+                    data = { url: rawText };
                 }
-                if (resp.ok && data.url) {
+
+                console.log('Respuesta de /subir:', data);
+
+                if (data.url) {
                     photoUrls.push(data.url);
                 } else {
-                    alert('Error al subir una foto: ' + (data.error || 'Desconocido'));
+                    console.warn('No se recibió URL válida en respuesta /subir');
                 }
+
             } catch (err) {
-                alert('Error de red al subir una foto.');
+                console.error('Error de red al subir una foto:', err);
             }
         }
+
         console.log('photoUrls a enviar:', photoUrls);
+
+
         // Esperar 1 segundo antes de enviar a /publicar-punto
         await new Promise(resolve => setTimeout(resolve, 1000));
 
