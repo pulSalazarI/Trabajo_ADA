@@ -365,7 +365,7 @@
             return;
         }
 
-        // Subir fotos a /subir y guardar las URLs
+        // Subir fotos a /subir y guardar las URLs (paralelo y robusto)
         const photoUrls = [];
         for (const file of selectedFiles) {
             const formData = new FormData();
@@ -375,18 +375,24 @@
                     method: 'POST',
                     body: formData
                 });
-                const data = await resp.json();
-                if (data.url) {
-                    photoUrls.push(data.url);
+                if (resp.ok) {
+                    const data = await resp.json();
+                    if (data.url) {
+                        photoUrls.push(data.url);
+                    } else {
+                        alert('Error al subir una foto: ' + (data.error || 'Desconocido'));
+                    }
                 } else {
-                    alert('Error al subir una foto: ' + (data.error || 'Desconocido'));
+                    alert('Error al subir una foto: respuesta no OK');
                 }
             } catch (err) {
                 alert('Error de red al subir una foto.');
             }
         }
+        console.log('photoUrls a enviar:', photoUrls);
+        // Esperar 1 segundo antes de enviar a /publicar-punto
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Aquí puedes agregar la lógica para enviar los datos junto con las URLs de las fotos
         const userName = sessionStorage.getItem('user_name');
         const payload = {
             user_name: userName || '',
@@ -396,6 +402,7 @@
             descripcion: description,
             imagenes: photoUrls
         };
+        console.log('Payload a publicar-punto:', payload);
         try {
             const resp = await fetch('/publicar-punto', {
                 method: 'POST',
