@@ -153,6 +153,10 @@ async function cargarDetalleBasura(id_p_basura) {
         document.getElementById('detalle-publicado-por').textContent = punto.user_name || '';
         document.getElementById('detalle-recompensa').textContent = punto.recompensa || '0.00';
         document.getElementById('detalle-descripcion').textContent = punto.descripcion || '';
+        // Guardar el user_name del publicador en sessionStorage
+        if (punto.user_name) {
+            sessionStorage.setItem('publicador', punto.user_name);
+        }
         
         const galeria = document.getElementById('detalle-galeria');
         galeria.innerHTML = '';
@@ -183,4 +187,38 @@ function cerrarDetalleBasura() {
 
 // Eliminar cualquier escucha de eventos externos para cargar el detalle
 // Solo se debe llenar y abrir el componente desde cargarDetalleDirecto
+
+window.cobrarRecompensa = async function() {
+    try {
+        // user_name: el que se muestra en el detalle
+        const user_name = document.getElementById('detalle-publicado-por').textContent || '';
+        // user_name_recolector: el que ha iniciado sesión
+        const user_name_recolector = sessionStorage.getItem('user_name') || '';
+        const recompensa = parseFloat(document.getElementById('detalle-recompensa').textContent) || 0;
+        // id_p_basura: el id guardado del popup seleccionado
+        const id_p_basura = sessionStorage.getItem('id_p_basura_seleccionado') || '';
+
+        const payload = {
+            user_name: user_name,
+            user_name_recolector: user_name_recolector,
+            recompensa: recompensa,
+            id_p_basura: parseInt(id_p_basura)
+        };
+
+        console.log('[COBRAR] Enviando al backend:', payload);
+        const res = await fetch('/recolectar-punto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error('No se pudo cobrar la recompensa');
+        const data = await res.json();
+        console.log('[COBRAR] Respuesta del backend:', data);
+        alert('¡Recompensa cobrada exitosamente!');
+    } catch (err) {
+        alert('Error al cobrar la recompensa');
+        console.error(err);
+    }
+}
 </script>
