@@ -150,6 +150,7 @@
             if (usuario) {
                 sessionStorage.setItem('sesion_iniciada', '1');
                 sessionStorage.setItem('usuario', usuario.user_name);
+                sessionStorage.setItem('user_name', usuario.user_name); // Guarda el user_name para el recolector
                 console.log('[LOGIN] Login exitoso:', usuario);
                 window.location.href = '/mapa_basura';
             } else {

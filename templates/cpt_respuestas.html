@@ -1,0 +1,27 @@
+<div id="confirmacion-popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #295003; padding: 32px 38px; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.18); font-size: 1.25rem; font-weight: bold; z-index: 9999; text-align: center; min-width: 320px;">
+    <span style="font-size:2.2rem;display:block;margin-bottom:12px;">✔️</span>
+    <span id="confirmacion-mensaje">Operación realizada correctamente</span>
+    <br><br>
+    <button id="btn-confirmar-ok" style="margin-top:12px;padding:8px 24px;font-size:1.1rem;background:#4caf50;color:#fff;border:none;border-radius:8px;cursor:pointer;">OK</button>
+</div>
+<script>
+// Lógica para mostrar el mensaje dinámicamente y recargar la página
+function mostrarConfirmacion(mensaje) {
+    let popup = document.getElementById('confirmacion-popup');
+    if (!popup) {
+        fetch('/cpt_respuestas')
+            .then(res => res.text())
+            .then(html => {
+                document.body.insertAdjacentHTML('beforeend', html);
+                document.getElementById('confirmacion-mensaje').textContent = mensaje;
+                document.getElementById('btn-confirmar-ok').onclick = function() {
+                    document.getElementById('confirmacion-popup').remove();
+                    window.location.reload();
+                };
+            });
+    } else {
+        document.getElementById('confirmacion-mensaje').textContent = mensaje;
+        popup.style.display = 'block';
+    }
+}
+</script>

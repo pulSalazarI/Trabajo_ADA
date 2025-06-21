@@ -138,6 +138,8 @@ function marcarRuta(destLat, destLon) {
 
 // Nueva función para consumir la API directamente al presionar el botón Detalle
 function cargarDetalleDirecto(id_p_basura) {
+    // Guardar el id del popup seleccionado en sessionStorage para referencia global
+    sessionStorage.setItem('id_p_basura_seleccionado', id_p_basura);
     fetch(`/puntos-basura-detalles?id_p_basura=${id_p_basura}`)
         .then(res => res.json())
         .then(data => {
@@ -201,6 +203,40 @@ function cerrarDetalleBasura() {
                 <span style=\"display: block; font-size: 1.08rem; color: #ffe066; text-align: center; margin-top: 10px; font-weight: 600;\">¡Tú ayudas al planeta y el planeta te lo agradece!</span>
             </div>`;
         }
+    }
+}
+
+// Función global para cobrar la recompensa desde el detalle
+window.cobrarRecompensa = async function() {
+    try {
+        // user_name: el que se muestra en el detalle
+        const user_name = document.getElementById('detalle-publicado-por').textContent || '';
+        // user_name_recolector: el que ha iniciado sesión
+        const user_name_recolector = sessionStorage.getItem('user_name') || '';
+        const recompensa = parseFloat(document.getElementById('detalle-recompensa').textContent) || 0;
+        // id_p_basura: el id guardado del popup seleccionado
+        const id_p_basura = sessionStorage.getItem('id_p_basura_seleccionado') || '';
+
+        const payload = {
+            user_name: user_name,
+            user_name_recolector: user_name_recolector,
+            recompensa: recompensa,
+            id_p_basura: parseInt(id_p_basura)
+        };
+
+        console.log('[COBRAR] Enviando al backend:', payload);
+        const res = await fetch('/recolectar-punto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        console.log('[COBRAR] Respuesta del backend:', data);
+        mostrarConfirmacion(data.mensaje || 'Operación realizada correctamente');
+    } catch (err) {
+        mostrarConfirmacion('Ocurrió un error al cobrar la recompensa.');
+        console.error(err);
     }
 }
 
