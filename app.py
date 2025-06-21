@@ -77,7 +77,8 @@ def publicar_punto():
         headers = {
             "apikey": SUPABASE_KEY,
             "Authorization": f"Bearer {SUPABASE_KEY}",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Prefer": "return=representation"
         }
         response_usuario = requests.get(url_usuario, headers=headers)
         if response_usuario.status_code != 200 or not response_usuario.json():
