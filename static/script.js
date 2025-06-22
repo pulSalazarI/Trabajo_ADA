@@ -47,13 +47,11 @@ function cargarPuntos() {
                 const marker = L.marker([p.lat, p.lon]).addTo(map);
                 // Guardamos el marcador en el objeto para poder eliminarlo después
                 markers[p.id] = marker;
-                // Asociamos popup con botón para marcar como visitado y detalle
+                // Asociamos popup solo con botones de ruta y detalle (sin visitado)
                 marker.bindPopup(`
                 Punto ID: ${p.id} <br>
-                Visitado: ${p.visitado} <br>
-                <button onclick="console.log('Botón Marcar Visitado presionado para punto ${p.id}');marcarVisitado(${p.id})" disabled>Marcar Visitado</button><br>
-                <button onclick="console.log('Botón Marcar Ruta presionado para punto ${p.id}');marcarRuta(${p.lat}, ${p.lon})">Marcar Ruta</button><br>
-                <button onclick="console.log('Botón Detalle presionado para punto ${p.id}');cargarDetalleDirecto(${p.id})">Detalle</button>
+                <button onclick="console.log('Botón Marcar Ruta presionado para punto ${p.id}');marcarRuta(${p.lat}, ${p.lon}, ${p.id})">Marcar Ruta</button><br>
+                <button id="detalle-btn-${p.id}" onclick="console.log('Botón Detalle presionado para punto ${p.id}');cargarDetalleDirecto(${p.id})" disabled>Detalle</button>
                 `);
             });
         })
@@ -109,7 +107,7 @@ function mostrarRuta(inicio, destino) {
 }
 
 // Función para trazar la ruta desde la personita hasta un punto de basura
-function marcarRuta(destLat, destLon) {
+function marcarRuta(destLat, destLon, puntoId) {
     const inicioLat = -12.2210067;
     const inicioLon = -76.924343;
     fetch(`/ruta?inicio_lat=${inicioLat}&inicio_lon=${inicioLon}&destino_lat=${destLat}&destino_lon=${destLon}`)
@@ -120,15 +118,15 @@ function marcarRuta(destLat, destLon) {
                 if (rutaActual) map.removeLayer(rutaActual);
                 rutaActual = L.polyline(coords, { color: 'blue' }).addTo(map);
                 map.fitBounds(rutaActual.getBounds());
-                // Deshabilitar todos los botones de "Marcar Ruta" y habilitar los de "Marcar Visitado"
+                // Deshabilitar todos los botones de "Marcar Ruta"
                 document.querySelectorAll('button').forEach(btn => {
                     if (btn.textContent === 'Marcar Ruta') {
                         btn.disabled = true;
                     }
-                    if (btn.textContent === 'Marcar Visitado') {
-                        btn.disabled = false;
-                    }
                 });
+                // Habilitar el botón Detalle solo para este punto
+                const detalleBtn = document.getElementById(`detalle-btn-${puntoId}`);
+                if (detalleBtn) detalleBtn.disabled = false;
             } else {
                 alert("No se pudo calcular la ruta");
             }

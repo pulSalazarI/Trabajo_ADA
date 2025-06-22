@@ -229,11 +229,11 @@ def recolectar_punto():
 
     return jsonify({"mensaje": "Recompensa transferida exitosamente"}), 200
 
-
+#########################################################################
 @app.route('/registrar-usuario', methods=['POST'])
 def registrar_usuario():
     datos = request.get_json()
-    
+
     # Validar campos requeridos
     campos_requeridos = ['nombres', 'user_name', 'correo', 'contrasena']
     if not all(campo in datos and datos[campo] for campo in campos_requeridos):
@@ -243,7 +243,9 @@ def registrar_usuario():
         "nombres": datos['nombres'],
         "user_name": datos['user_name'],
         "correo": datos['correo'],
-        "contrasena": datos['contrasena']
+        "contrasena": datos['contrasena'],
+        "saldo": 100.00,
+        "honor": 100.00
     }
 
     headers = {
@@ -255,12 +257,15 @@ def registrar_usuario():
     response = requests.post(f"{SUPABASE_URL}/rest/v1/usuarios", headers=headers, json=payload)
 
     if response.status_code in [200, 201]:
-        
         return jsonify({"mensaje": "Usuario registrado correctamente"}), 201
-    
     else:
-        return jsonify({"error": "No se pudo registrar", "detalles": response.json()}), 500
+        try:
+            error_info = response.json()
+        except Exception:
+            error_info = {"detalle": "No se pudo decodificar la respuesta de Supabase"}
+        return jsonify({"error": "No se pudo registrar", "detalles": error_info}), 500
 
+##############################################################################
 @app.route('/perfil-usuario', methods=['GET'])
 def obtener_perfil_usuario():
     user_name = request.args.get("user_name")

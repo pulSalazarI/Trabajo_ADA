@@ -17,15 +17,16 @@
 {% block content %}
     <div class="no-scroll-page" style="
     display: flex; 
-    
     justify-content: center; 
-    align-items: flex-start;
+    align-items: center;
     min-height: calc(100vh - 80px);
     height: calc(100vh - 80px); 
     width: 100vw; 
     overflow: hidden;
     padding-top: 60px;">
-        {% include 'register_conponet.html' %}
+        <div style="zoom:1; -webkit-transform:scale(0.9); -webkit-transform-origin:center center; transform:scale(0.9); transform-origin:center center; width:100%; display:flex; justify-content:center; align-items:center;">
+            {% include 'register_conponet.html' %}
+        </div>
     </div>
 {% endblock %}
 {% block scripts %}

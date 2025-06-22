@@ -42,7 +42,14 @@
             
         }
         .intro-title { font-size: 2.2rem; font-weight: bold; margin-bottom: 18px; color: #fff; text-align: left; }
-        .intro-text { font-size: 1.5rem; line-height: 1.6; color: #1e1d1d; margin-bottom: 32px; max-width: 500px; text-align: left; }
+        .intro-text { 
+            font-size: 1.5rem; 
+            line-height: 1.6;
+            color: #1e1d1d; 
+            margin-bottom: 32px; 
+            max-width: 500px; 
+            text-align: left; }
+
         #presentacion-texto {
             display: flex;
             flex-direction: column;
@@ -107,9 +114,26 @@
         </div>
         <!-- Contenedor del texto de presentación centrado -->
         <div id="presentacion-texto" 
-            style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; margin-top: 120px; height: 100%; min-height: 80vh;">
+            style="
+            display: flex; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: flex-start; 
+            margin-top: 120px; 
+            height: 100%; 
+            min-height: 80vh;">
 
-            <p id="intro-text" class="intro-text" style="text-align: center; max-width: 700px; font-size: 1.5rem; font-weight: bold; background: #08080864; color: #92fe0d; padding: 24px 32px; border-radius: 16px;">
+            <p id="intro-text" class="intro-text" 
+                style="
+                text-align: center; 
+                max-width: 900px; 
+                font-size: 1.5rem; 
+                font-weight: bold; 
+                background: #0808088f; 
+                color: #92fe0d; 
+                padding: 24px 32px; 
+                border-radius: 16px;">
+
                 I am a 23-year old designer trying to make the world look a bit better. I have 
                 worked for many agencies all around the world. Since early 2009 I have worked for 
                 eyesite media based in Hamburg, Germany. I am a movie and coffee addict, 
@@ -123,10 +147,10 @@
 <script>
         // Textos para cada sección
         const textos = {
-            'inicio': '¡Bienvenido El términilia de los mustélidos. También se utiliza para referirse al visón europeo (Mustela lutreola), aunque esta especie se encuentra en peligro de extinción. El visón americano es una especie invasora en muchos lugares, incluyendo Europa y Argentina, donde ha tenido un impacto negativo en la fauna nativa. a Basurini! Tu plataforma para la gestión ecológica y responsable de residuos. Descubre cómo juntos podemos hacer la diferencia.',
-            'mision': 'Nuestra misión es contribuir a un mundo más limpio y sostenible, promoviendo la correcta gestión de residuos y la conciencia ambiental en la comunidad.',
-            'vision': 'Nuestra visión es ser líderes en innovación y educación ambiental, inspirando a las personas a adoptar hábitos responsables para el cuidado del planeta.',
-            'historia': 'Basurini nació como una iniciativa estudiantil para resolver los problemas de acumulación de basura en la ciudad, evolucionando hasta convertirse en un referente de acción ecológica.'
+            'inicio': '¡Bienvenido! Si amas este planeta, estás en el lugar correcto. En Basurini, creemos que cada pequeña acción cuenta, y que las personas como tú —que no se quedan de brazos cruzados— son las que transforman el mundo. Aquí no solo se recoge basura, se siembra conciencia, se genera impacto y se crea comunidad. Porque limpiar una esquina es empezar a sanar el planeta, y tú puedes ser parte de ese cambio. Este no es solo un mapa: es un movimiento. Y comienza contigo. 🌍✨',
+            'mision': 'En Basurini, nuestra misión es empoderar a las personas para que se conviertan en agentes de cambio ambiental, conectando a quienes desean deshacerse responsablemente de residuos con quienes están dispuestos a recogerlos. A través de la tecnología, fomentamos la conciencia ecológica, la colaboración comunitaria y la acción directa para construir juntos un entorno más limpio, justo y sostenible.',
+            'vision': 'En Basurini, nuestra visión es construir una red global de personas comprometidas con el cambio ambiental, donde cada calle limpia, cada recolección y cada colaboración sean parte de un movimiento que transforme nuestra relación con el planeta, haciendo de lo cotidiano una revolución ecológica.',
+            'historia': 'Basurini nació como una iniciativa para apoyar a los recolectores informales, esas personas invisibles que todos los días recorren nuestras calles, contribuyendo silenciosamente al orden y al medio ambiente. Queríamos darles una herramienta, una oportunidad, una forma más digna y eficiente de hacer su labor. Pero pronto nos dimos cuenta de que esto podía ir mucho más allá. No solo se trataba de basura, sino de conexión, de conciencia, de participación. Vimos el potencial de crear una comunidad que no solo resuelva un problema ambiental, sino que también aporte al desarrollo social, económico y humano de nuestras ciudades. Así, Basurini se transformó en una plataforma para todos: ciudadanos, recolectores, vecinos comprometidos con el cambio.'
         };
         // Asignar eventos a los botones del header
         document.addEventListener('DOMContentLoaded', function() {

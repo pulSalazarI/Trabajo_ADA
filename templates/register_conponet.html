@@ -370,15 +370,15 @@ function mostrarModalConfirmacion() {
 }
 `;
     document.head.appendChild(style);
-  }
-  const overlay = document.createElement('div');
-  overlay.className = 'modal-overlay-confirm';
-  overlay.appendChild(template.content.cloneNode(true));
-  document.body.appendChild(overlay);
-  // Botón aceptar
-  overlay.querySelector('#btn-aceptar-modal').onclick = function() {
-    window.location.href = '/bienvenida';
-  };
+    }
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay-confirm';
+    overlay.appendChild(template.content.cloneNode(true));
+    document.body.appendChild(overlay);
+    // Botón aceptar
+    overlay.querySelector('#btn-aceptar-modal').onclick = function() {
+        window.location.href = '/bienvenida';
+    };
 }
 
 // Reemplazar el fetch por mostrarModalConfirmacion
